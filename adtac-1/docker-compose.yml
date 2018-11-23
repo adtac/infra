@@ -27,7 +27,7 @@ services:
 
   postgres:
     image: postgres:10.5
-    command: postgres -c config_file=/etc/postgresql.conf -c logging_collector=on -c log_destination=stderr -c log_directory=/var/logs/postgresql
+    command: postgres -c config_file=/etc/postgresql.conf
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
