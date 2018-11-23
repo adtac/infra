@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+  nginx:
+    build: .
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+    networks:
+      - grafana_network
+
+  grafana:
+    image: grafana/grafana:5.3.4
+    environment:
+      GF_SERVER_ROOT_URL: https://grafana.adtac.in
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - grafana_network
+      - postgres_network
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:10.5
+    environment:
+      POSTGRES_DB: grafana
+      POSTGRES_USER: grafana
+      POSTGRES_PASSWORD: grafana
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+    networks:
+      - postgres_network
+
+networks:
+  grafana_network:
+  postgres_network:
+
+volumes:
+  grafana_network:
+  postgres_data:
