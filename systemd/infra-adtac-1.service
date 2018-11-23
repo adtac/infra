@@ -1,0 +1,12 @@
+[Unit]
+Description=adtac-1 server services
+After=network.target docker.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/docker-compose -f /etc/infra/docker-compose.yml up
+ExecStop=/usr/bin/docker-compose -f /etc/infra/docker-compose.yml down
+WorkingDirectory=/etc/infra
+
+[Install]
+WantedBy=multi-user.target
