@@ -40,5 +40,5 @@ networks:
   postgres_network:
 
 volumes:
-  grafana_network:
+  grafana_data:
   postgres_data:
