@@ -27,12 +27,14 @@ services:
 
   postgres:
     image: postgres:10.5
+    command: postgres -c config_file=/etc/postgresql.conf -c logging_collector=on -c log_destination=stderr -c log_directory=/var/logs/postgresql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+      - postgres_logs:/var/logs/postgresql
+      - ./postgresql.conf:/etc/postgresql.conf
     networks:
       - postgres_network
 
@@ -43,3 +45,4 @@ networks:
 volumes:
   grafana_data:
   postgres_data:
+  postgres_logs:
