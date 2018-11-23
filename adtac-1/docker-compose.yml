@@ -28,9 +28,8 @@ services:
   postgres:
     image: postgres:10.5
     environment:
-      POSTGRES_DB: grafana
-      POSTGRES_USER: grafana
-      POSTGRES_PASSWORD: grafana
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf
