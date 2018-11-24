@@ -43,7 +43,7 @@ services:
     environment:
       RED_USERNAME: ${RED_USERNAME}
       RED_PASSWORD: ${RED_PASSWORD}
-      POSTGRES: postgres://postgres:postgres@postgres:5432/redprof?sslmode=disable
+      POSTGRES: postgres://postgres:postgres@postgres:5432/grafana?sslmode=disable
     depends_on:
       - postgres
     networks:
