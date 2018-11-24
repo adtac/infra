@@ -38,9 +38,22 @@ services:
     networks:
       - postgres_network
 
+  redprof:
+    image: registry.gitlab.com/adtac/redprof
+    environment:
+      RED_USERNAME: ${RED_USERNAME}
+      RED_PASSWORD: ${RED_PASSWORD}
+      POSTGRES: postgres://postgres:postgres@postgres:5432/redprof?sslmode=disable
+    depends_on:
+      - postgres
+    networks:
+      - redprof_network
+      - postgres_network
+
 networks:
   grafana_network:
   postgres_network:
+  redprof_network:
 
 volumes:
   grafana_data:
