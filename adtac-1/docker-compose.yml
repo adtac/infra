@@ -15,18 +15,6 @@ services:
       - grafana_network
       - nextcloud_network
 
-  grafana:
-    image: grafana/grafana:5.3.4
-    environment:
-      GF_SERVER_ROOT_URL: https://grafana.adtac.in
-    volumes:
-      - grafana_data:/var/lib/grafana
-    networks:
-      - grafana_network
-      - postgres_network
-    depends_on:
-      - postgres
-
   postgres:
     image: postgres:10.5
     command: postgres -c config_file=/etc/postgresql.conf
@@ -52,6 +40,18 @@ services:
       - redprof_network
       - postgres_network
 
+  grafana:
+    image: grafana/grafana:5.3.4
+    environment:
+      GF_SERVER_ROOT_URL: https://grafana.adtac.in
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - grafana_network
+      - postgres_network
+    depends_on:
+      - postgres
+
   nextcloud:
     image: nextcloud:15
     environment:
@@ -71,8 +71,8 @@ services:
 
 networks:
   grafana_network:
-  postgres_network:
   redprof_network:
+  postgres_network:
   nextcloud_network:
 
 volumes:
