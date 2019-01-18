@@ -62,6 +62,7 @@ services:
     volumes:
       - nextcloud_data:/var/www/html/data
       - nextcloud_config:/var/www/html/config
+      - nextcloud_apps:/var/www/html/custom_apps
     networks:
       - nextcloud_network
       - postgres_network
@@ -80,3 +81,4 @@ volumes:
   postgres_logs:
   nextcloud_data:
   nextcloud_config:
+  nextcloud_apps:
