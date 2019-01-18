@@ -12,6 +12,7 @@ services:
       - grafana
     networks:
       - grafana_network
+      - nextcloud_network
 
   grafana:
     image: grafana/grafana:5.3.4
@@ -60,11 +61,15 @@ services:
       NEXTCLOUD_ADMIN_USER: adtac
     volumes:
       - nextcloud_data:/var/www/html/data
+    networks:
+      - nextcloud_network
+      - postgres_network
 
 networks:
   grafana_network:
   postgres_network:
   redprof_network:
+  nextcloud_network:
 
 volumes:
   grafana_data:
