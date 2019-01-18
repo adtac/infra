@@ -58,8 +58,7 @@ services:
       POSTGRES_DB: nextcloud
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_HOST: postgres
-      NEXTCLOUD_ADMIN_USER: adtac
+      POSTGRES_HOST: postgres:5432
     volumes:
       - nextcloud_data:/var/www/html/data
       - nextcloud_config:/var/www/html/config
