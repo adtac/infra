@@ -50,6 +50,17 @@ services:
       - redprof_network
       - postgres_network
 
+  nextcloud:
+    image: nextcloud:15
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: postgres
+      NEXTCLOUD_ADMIN_USER: adtac
+    volumes:
+      - nextcloud_data:/var/www/html/data
+
 networks:
   grafana_network:
   postgres_network:
