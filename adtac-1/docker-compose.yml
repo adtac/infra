@@ -70,3 +70,4 @@ volumes:
   grafana_data:
   postgres_data:
   postgres_logs:
+  nextcloud_data:
