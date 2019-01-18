@@ -1,0 +1,16 @@
+[Unit]
+Description=arch-1 nextcloud sync
+After=network.target
+
+[Service]
+Type=simple
+User=adtac
+Group=adtac
+TimeoutStartSec=0
+Restart=always
+RestartSec=300s
+ExecStart=%h/bin/nextcloud-sync
+WorkingDirectory=%h
+
+[Install]
+WantedBy=multi-user.target
