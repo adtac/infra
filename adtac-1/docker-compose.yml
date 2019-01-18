@@ -10,6 +10,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - grafana
+      - nextcloud
     networks:
       - grafana_network
       - nextcloud_network
@@ -64,6 +65,8 @@ services:
     networks:
       - nextcloud_network
       - postgres_network
+    depends_on:
+      postgres
 
 networks:
   grafana_network:
