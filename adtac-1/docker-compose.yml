@@ -39,7 +39,7 @@ services:
     networks:
       - redprof_network
       - postgres_network
-    restart_policy: any
+    restart: always
 
   grafana:
     image: grafana/grafana:5.3.4
