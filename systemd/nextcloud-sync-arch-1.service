@@ -1,16 +1,16 @@
 [Unit]
 Description=arch-1 nextcloud sync
 After=network.target
+Requires=network.target
 
 [Service]
 Type=simple
+TimeoutStartSec=0
 User=adtac
 Group=adtac
-TimeoutStartSec=0
 Restart=always
 RestartSec=300s
-ExecStart=%h/bin/nextcloud-sync
-WorkingDirectory=%h
+ExecStart=bash -c "/home/$(whoami)/bin/nextcloud-sync"
 
 [Install]
 WantedBy=multi-user.target
