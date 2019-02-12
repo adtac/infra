@@ -4,7 +4,7 @@ After=network.target docker.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/docker-compose -f /etc/infra/docker-compose.yml up
+ExecStart=/usr/bin/docker-compose -f /etc/infra/docker-compose.yml up --force-recreate
 ExecStop=/usr/bin/docker-compose -f /etc/infra/docker-compose.yml down
 WorkingDirectory=/etc/infra
 
