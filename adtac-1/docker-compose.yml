@@ -8,12 +8,15 @@ services:
       - 443:443
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/htpasswd:/etc/htpasswd
     depends_on:
       - grafana
       - nextcloud
+      - registry
     networks:
       - grafana_network
       - nextcloud_network
+      - registry_network
 
   postgres:
     image: postgres:10.5
@@ -29,6 +32,7 @@ services:
       - postgres_network
 
   redprof:
+    entrypoint: ["echo", "temporarily disabled due to 2FA"]
     image: registry.gitlab.com/adtac/redprof
     environment:
       RED_USERNAME: ${RED_USERNAME}
@@ -39,7 +43,6 @@ services:
     networks:
       - redprof_network
       - postgres_network
-    restart: always
 
   grafana:
     image: grafana/grafana:5.3.4
@@ -70,11 +73,19 @@ services:
     depends_on:
       - postgres
 
+  registry:
+    image: registry:2
+    networks:
+      - registry_network
+    volumes:
+      - registry_data:/var/lib/registry
+
 networks:
   grafana_network:
   redprof_network:
   postgres_network:
   nextcloud_network:
+  registry_network:
 
 volumes:
   grafana_data:
@@ -83,3 +94,4 @@ volumes:
   nextcloud_data:
   nextcloud_config:
   nextcloud_apps:
+  registry_data:
