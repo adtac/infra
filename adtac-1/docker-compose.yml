@@ -32,8 +32,8 @@ services:
       - postgres_network
 
   redprof:
-    entrypoint: ["echo", "temporarily disabled due to 2FA"]
     image: registry.gitlab.com/adtac/redprof
+    command: echo "temporarily disabled due to 2FA"
     environment:
       RED_USERNAME: ${RED_USERNAME}
       RED_PASSWORD: ${RED_PASSWORD}
