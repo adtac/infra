@@ -4,8 +4,8 @@ After=network.target docker.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/docker-compose -f /infra/adtac-1/docker-compose.yml up --force-recreate
-ExecStop=/usr/bin/docker-compose -f /infra/adtac-1/docker-compose.yml down
+ExecStart=/usr/bin/docker-compose -p infra -f /infra/adtac-1/docker-compose.yml up --force-recreate
+ExecStop=/usr/bin/docker-compose -p infra -f /infra/adtac-1/docker-compose.yml down
 WorkingDirectory=/infra/adtac-1
 
 [Install]
