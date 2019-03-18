@@ -1,0 +1,13 @@
+diff --git a/src/screens/screen.cpp b/src/screens/screen.cpp
+index e2e74bb..3f1fcec 100644
+--- a/src/screens/screen.cpp
++++ b/src/screens/screen.cpp
+@@ -31,7 +31,7 @@ using Global::myInactiveScreen;
+ void drawSeparator(int x)
+ {
+ 	color_set(Config.main_color.pairNumber(), nullptr);
+-	mvvline(Global::MainStartY, x, 0, Global::MainHeight);
++	mvvline(Global::MainStartY, x, 1, Global::MainHeight);
+ 	standend();
+ 	refresh();
+ }
