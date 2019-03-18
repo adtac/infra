@@ -13,6 +13,7 @@ arch=('x86_64')
 license=('GPL')
 depends=('curl' 'libmpdclient' 'taglib' 'ncurses' 'fftw' 'boost-libs')
 makedepends=('boost')
+conflicts=('ncmpcpp')
 source=(${pkgname}-${pkgver}.tar.bz2::https://rybczak.net/ncmpcpp/stable/${pkgname}-${pkgver}.tar.bz2
         no-separator.patch)
 sha512sums=('9384edd162f40af23e4f26f437356520f117e4e2ab513ed3de132d2f11e597082d1cb7f0dd3696660d0c9bb85ad03e31fb921c97a11c7b28b32c5907fdbb8e8f'
