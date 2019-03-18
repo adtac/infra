@@ -18,6 +18,12 @@ services:
       - nextcloud_network
       - registry_network
 
+  certbot:
+    build: ./certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/digitalocean.ini:/etc/digitalocaen.ini
+
   postgres:
     image: postgres:10.5
     command: postgres -c config_file=/etc/postgresql.conf
