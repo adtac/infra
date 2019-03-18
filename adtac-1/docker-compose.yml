@@ -2,7 +2,7 @@ version: '2'
 
 services:
   nginx:
-    build: .
+    build: ./nginx
     ports:
       - 80:80
       - 443:443
@@ -27,7 +27,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - postgres_logs:/var/logs/postgresql
-      - ./postgresql.conf:/etc/postgresql.conf
+      - ./postgresql/postgresql.conf:/etc/postgresql.conf
     networks:
       - postgres_network
 
