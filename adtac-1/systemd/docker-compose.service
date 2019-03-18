@@ -1,0 +1,12 @@
+[Unit]
+Description=adtac-1 docker services
+After=network.target docker.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/docker-compose -f /infra/adtac-1/docker-compose.yml up --force-recreate
+ExecStop=/usr/bin/docker-compose -f /infra/adtac-1/docker-compose.yml down
+WorkingDirectory=/infra/adtac-1
+
+[Install]
+WantedBy=multi-user.target
