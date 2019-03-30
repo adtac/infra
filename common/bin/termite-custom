@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+TERMITE_PID=$(swaymsg -t get_tree | jq '.. | select(.focused? == true) | .pid')
+if [[ "$TERMITE_PID" == "null" ]]; then
+  exec termite
+else
+  ZSH_PID=$(pgrep -P $TERMITE_PID | head -n 1)
+  exec termite --directory "$(readlink /proc/$ZSH_PID/cwd)"
+fi

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Copies the piped text to clipboard. This is a program instead of an alias
+# because I want to use this in other programs.
+
+xsel --clipboard --input

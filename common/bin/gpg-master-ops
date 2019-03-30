@@ -1,0 +1,266 @@
+#!/usr/bin/env bash
+
+set -e
+
+display_help() {
+  cat << help_msg
+usage: gpg-master-ops OPTIONS
+temporarily mount a master key flash drive for master key operations.
+
+required arguments:
+  -d     /dev/sdx LUKS device that is currently unmounted
+  -k     relative path to master private key file in the LUKS device
+
+optional arguments:
+  -l     list possible LUKS devices to mount
+  -h     show this help message and exit
+help_msg
+
+  printf "%s" "$help_msg"
+}
+
+list_luks_devices=
+luks_device=
+luks_mount=
+orig_gnupg_home=
+gnupg_root=
+gnupg_home=
+key_path=
+key_id=
+key_keygrip=
+key_file=
+
+parse_args() {
+  while getopts "ld:k:h" opt; do
+    case "$opt" in
+      l)
+        list_luks_devices=yes
+        ;;
+      d)
+        luks_device=$OPTARG
+        ;;
+      k)
+        key_path=$OPTARG
+        ;;
+      h)
+        display_help
+        exit
+        ;;
+      *)
+        display_help
+        exit
+        ;;
+    esac
+  done
+
+  if [[ "$list_luks_devices" == "yes" ]]; then
+    lsblk --fs | grep crypto_LUKS | awk '{ print "/dev/" $1 }'
+    exit 0
+  fi
+
+  if [[ "$luks_device" == "" ]]; then
+    printf "error: the LUKS device flag -d is not set\n"
+    exit 1
+  fi
+
+  if [[ "$key_path" == "" ]]; then
+    printf "error: the key path flag -k is not set\n"
+    exit 1
+  fi
+
+  if [[ ! -e "$luks_device" ]]; then
+    if [[ ! -e "/dev/${luks_device}" ]]; then
+      printf "error: %s is not a valid device\n" "$luks_device"
+      exit 1
+    else
+      luks_device=/dev/${luks_device}
+    fi
+  fi
+
+  if ! sudo cryptsetup isLuks "$luks_device"; then
+    printf "error: %s is not a LUKS device\n" "$luks_device"
+    exit 1
+  fi
+}
+
+setup_gnupg_home() {
+  gnupg_root=$(mktemp -d -p /tmp gnupg-home-XXXXXX)
+  gnupg_home="${gnupg_root}/.gnupg"
+  if [[ -e "$gnupg_home" ]]; then
+    mkdir -p "$gnupg_home"
+    chmod -R 700 "$gnupg_home"
+  fi
+}
+
+setup_luks_mount() {
+  luks_mount=$(mktemp -d -p /tmp luks-mount-XXXXXX)
+
+  while true; do
+    set +e
+    sudo cryptsetup open "$luks_device" luks-gnupg-mapper
+    retcode=$?
+    set -e
+
+    close=
+    case $retcode in
+      0)
+        break
+        ;;
+      5)
+        printf "automatically close it and retry? (y/n) "
+        close=true
+        ;;
+      *)
+        printf "retry (y/n) "
+        ;;
+    esac
+
+    read ans
+    if [[ "$ans" == "y" || "$ans" == "Y" ]]; then
+      if [[ "$close" == "true" ]]; then
+        mount_path=$(mount | grep "luks-gnupg-mapper" | awk '{print $3 }')
+        if [[ ! -z "$mount_path" ]]; then
+          printf "automatically unmounting %s\n" "$mount_path"
+          sudo umount "$mount_path"
+        fi
+
+        sudo cryptsetup close luks-gnupg-mapper
+      fi
+      continue
+    else
+      exit 1
+    fi
+  done
+
+  sudo mount /dev/mapper/luks-gnupg-mapper "$luks_mount"
+
+  if [[ ! -e "${luks_mount}/${key_path}" ]]; then
+    cleanup_luks_mount
+    printf "error: %s does not exist relative to the LUKS root\n" "$key_path"
+    exit 1
+  fi
+
+  key_path="${luks_mount}/${key_path}"
+}
+
+init_gnupg_home() {
+  orig_gnupg_home="${HOME}/.gnupg"
+  if [[ $GNUPGHOME != "" ]]; then
+    orig_gnupg_home=$GNUPGHOME
+  fi
+
+  sudo cp -r "$orig_gnupg_home" "$gnupg_home"
+  sudo chown $LOGNAME:$(id -g) -R "$gnupg_home"
+  sudo chmod 700 -R "$gnupg_home"
+
+  key_id=$(gpg2 --keyid-format 0xlong \
+                --homedir "$gnupg_home" \
+                --import "$key_path" 2>&1 \
+           | grep -o "0x[0-9A-F]*" \
+           | head -n 1)
+
+  printf "imported %s\n" "$key_id"
+
+  key_keygrip=$(gpg2 --keyid-format 0xlong \
+                     --homedir "$gnupg_home" \
+                     --with-keygrip \
+                     --with-colons \
+                     --list-key "$key_id" \
+                | grep grp \
+                | head -n 1 \
+                | cut -d ':' -f 10)
+
+  key_file="${gnupg_home}/private-keys-v1.d/${key_keygrip}.key"
+
+  gpg2 --homedir "$gnupg_home" --list-secret-key "$key_id"
+}
+
+open_shell() {
+  shell=$(basename $(getent passwd $LOGNAME | cut -d ':' -f 7))
+
+  case "$shell" in
+    zsh)
+      zdotdir=$(mktemp -d -p /tmp zdotdir-XXXXXX)
+      zshrc="${zdotdir}/.zshrc"
+      printf "source %s/.zshrc\nexport PS1=\" (gpg-master-ops) \$PS1\"\n" "$HOME" >$zshrc
+      GNUPGHOME=$gnupg_home ZDOTDIR=$zdotdir zsh
+      rm -rf $zdotdir
+      ;;
+
+    bash)
+      bashrcdir=$(mktemp -d -p /tmp bashrc-XXXXXX)
+      bashrc="${zdotdir}/.bashrc"
+      printf "source %s/.bashrc\nexport PS1=\"(gpg-master-ops) \$PS1\"\n" "$HOME" >$bashrc
+      GNUPGHOME=$gnupg_home bash --rcfile $bashrc
+      rm -rf $bashrcdir
+      ;;
+
+    *)
+      printf "entering shell with custom gnupg home...\n"
+      GNUPGHOME=$gnupg_home $SHELL
+      ;;
+  esac
+}
+
+remove_secret_key() {
+  printf "removing %s (master private key)\n" "$key_keygrip"
+  shred "$key_file"
+  rm "$key_file"
+}
+
+copy_back_gnupg_home() {
+  backup=
+  flag=
+  for i in $(seq 1 5); do
+    backup="${orig_gnupg_home}.backup-${i}"
+    if [[ ! -e "$backup" ]]; then
+      flag=true
+      break
+    fi
+  done
+
+  if [[ "$flag" == "" ]]; then
+    rm -rf "${orig_gnupg_home}.backup-1"
+    for i in $(seq 2 5); do
+      j=$(($i-1))
+      mv "${orig_gnupg_home}.backup-${i}" "${orig_gnupg_home}.backup-${j}"
+    done
+    backup="${orig_gnupg_home}.backup-5"
+  fi
+
+  mv "$orig_gnupg_home" "$backup"
+
+  mv "$gnupg_home" "$orig_gnupg_home"
+
+  printf ".gnupg backup can be found at %s; goodbye!\n" "$backup"
+}
+
+cleanup_luks_mount() {
+  sudo umount "$luks_mount"
+  sudo rm -rf "$luks_mount"
+  sudo cryptsetup close luks-gnupg-mapper
+}
+
+cleanup_gnupg_home() {
+  sudo rm -rf "$gnupg_root"
+}
+
+main() {
+  parse_args $*
+
+  setup_gnupg_home
+  setup_luks_mount
+
+  init_gnupg_home
+
+  open_shell
+
+  remove_secret_key
+
+  copy_back_gnupg_home
+
+  cleanup_luks_mount
+  cleanup_gnupg_home
+}
+
+main $*

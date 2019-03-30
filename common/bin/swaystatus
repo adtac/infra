@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+get_volume() {
+  mute=$(cntrl volume is-muted)
+  if [[ "$mute" == "yes" ]]; then
+    printf "Volume: Muted"
+  else
+    volume=$(cntrl volume get)
+    printf "Volume: %s%%" "$volume"
+  fi
+}
+
+get_music() {
+  lines=$(mpc | wc -l)
+  if [[ "$lines" -gt "1" ]]; then
+    mpc | head -n 1
+  else
+    printf "Not Playing"
+  fi
+}
+
+i3status | while :
+do
+  read line
+
+  volume=$(get_volume)
+  brightness=$(cntrl brightness get)
+  music=$(get_music)
+
+  out=
+  for obj in "$music" "$volume" "Brightness: $brightness%" "$line  "; do
+    out="$out     $obj"
+  done
+  echo "$out"
+done

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+refresh_status=false
+if [[ "$1" == "-r" ]]; then
+  refresh_status=true
+  shift
+fi
+
+if [[ "$1" == "volume" ]]; then
+  if [[ "$2" == "get" ]]; then
+    pactl list sinks | awk '/RUNNING/,/Volume/' | grep "Volume: [^:]*: [0-9]* / *\([0-9]*\)" -o | tail -n 1 | awk '{ print $5 }'
+  elif [[ "$2" == "is-muted" ]]; then
+    pactl list sinks | awk '/RUNNING/,/Mute/' | grep Mute | tail -n 1 | awk '{ print $2 }'
+  elif [[ "$2" == "set" ]]; then
+    pactl set-sink-volume $(pacmd list-sinks | awk '/* index:/{print $3}') $3%
+  elif [[ "$2" == "inc" ]]; then
+    pactl set-sink-volume $(pacmd list-sinks | awk '/* index:/{print $3}') +$3%
+  elif [[ "$2" == "dec" ]]; then
+    pactl set-sink-volume $(pacmd list-sinks | awk '/* index:/{print $3}') -$3%
+  fi
+fi
+
+if [[ "$1" == "mute" ]]; then
+  if [[ "$2" == "get" ]]; then
+    pactl list sinks | grep Mute | tail -n 1 | awk '{ print $2 }'
+  elif [[ "$2" == "set" ]]; then
+    if [[ "$3" == "yes" ]]; then
+      cmd=true
+    elif [[ "$3" == "no" ]]; then
+      cmd=false
+    elif [[ "$3" == "toggle" ]]; then
+      cmd=toggle
+    fi
+    pactl set-sink-mute $(pacmd list-sinks |awk '/* index:/{print $3}') $cmd
+  fi
+fi
+
+if [[ "$1" == "brightness" ]]; then
+  if [[ "$2" == "get" ]]; then
+    echo $(light -G) | awk '{print int($1+0.5)}'
+  elif [[ "$2" == "set" ]]; then
+    light -S $3
+  elif [[ "$2" == "inc" ]]; then
+    light -A $3
+  elif [[ "$2" == "dec" ]]; then
+    light -U $3
+  fi
+fi
+
+if [[ "$refresh_status" == "true" ]]; then
+  kill -USR1 $(pidof i3status)
+fi
