@@ -1,0 +1,129 @@
+set $mod Mod4
+font VT323 13
+
+# start a terminal
+bindsym $mod+Return exec /bin/sh termite-custom
+
+bindsym $mod+space exec --no-startup-id rofi -show run -font "VT323 14" -normal-window
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+# move between windows
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+bindsym $mod+a focus parent
+
+# move focused window
+bindsym $mod+shift+h move left
+bindsym $mod+shift+j move down
+bindsym $mod+shift+k move up
+bindsym $mod+shift+l move right
+
+# split orientation
+bindsym $mod+alt+l split h
+bindsym $mod+alt+h split h
+bindsym $mod+alt+j split v
+bindsym $mod+alt+k split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# toggle between tabbed and tiling; stacked windows are totally useless so I'm
+# not going to waste a binding on it
+bindsym $mod+alt+t layout tabbed
+bindsym $mod+alt+s layout toggle split
+
+set $ws1 " 1 "
+set $ws2 " 2 "
+set $ws3 " 3 "
+set $ws4 " 4 "
+set $ws5 " 5 "
+set $ws6 " 6 "
+set $ws7 " 7 "
+set $ws8 " 8 "
+set $ws9 " 9 "
+
+# switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+
+
+# class                 border     background  text       indicator  child-border
+client.focused          #d6336c  #d6336c   #ffffff  #d6336c  #d6336c
+client.focused_inactive #000000  #000000   #fcc2d7  #ffe3e3  #ffe3e3
+client.unfocused        #fff4e6  #fff4e6   #073642  #fff4e6  #fff4e6
+client.background #ff0000
+output * bg #fff4e6 solid_color
+
+mode "resize" {
+  bindsym h resize shrink width 5 px or 5 ppt
+  bindsym j resize grow height 5 px or 5 ppt
+  bindsym k resize shrink height 5 px or 5 ppt
+  bindsym l resize grow width 5 px or 5 ppt
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+bindsym $mod+shift+r mode "resize"
+
+bar {
+  font VT323 14
+  strip_workspace_numbers yes
+  status_command ~/bin/swaystatus
+
+  position top
+  height 20
+
+  colors {
+    background         #fff4e6ff
+    statusline         #495057ff
+    focused_workspace  #ffe3e3ff #ffe3e3ff #495057ff
+    inactive_workspace #fff4e6ff #fff4e6ff #495057ff
+  }
+}
+
+bindsym $mod+b                exec ~/bin/toggle-swaybar
+bindsym XF86AudioRaiseVolume  exec cntrl -r volume inc 5
+bindsym XF86AudioLowerVolume  exec cntrl -r volume dec 5
+bindsym XF86AudioMute         exec cntrl -r mute set toggle
+bindsym XF86MonBrightnessUp   exec cntrl -r brightness inc 2.5
+bindsym XF86MonBrightnessDown exec cntrl -r brightness dec 2.5
+bindsym XF86AudioPlay         exec mpc toggle
+bindsym XF86AudioPause        exec mpc toggle
+bindsym XF86AudioNext         exec mpc next
+bindsym XF86AudioPrev         exec mpc prev
+
+default_border pixel 3
+gaps inner 3
+gaps outer 0
+hide_edge_borders smart
+smart_gaps on
+
+focus_wrapping force
+workspace_auto_back_and_forth yes
