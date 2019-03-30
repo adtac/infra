@@ -10,13 +10,12 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
       - /etc/htpasswd:/etc/htpasswd
     depends_on:
-      - grafana
       - nextcloud
       - registry
     networks:
-      - grafana_network
       - nextcloud_network
       - registry_network
+      - plex_network
 
   certbot:
     build: ./certbot
@@ -36,31 +35,6 @@ services:
       - ./postgresql/postgresql.conf:/etc/postgresql.conf
     networks:
       - postgres_network
-
-  redprof:
-    image: registry.gitlab.com/adtac/redprof
-    command: echo "temporarily disabled due to 2FA"
-    environment:
-      RED_USERNAME: ${RED_USERNAME}
-      RED_PASSWORD: ${RED_PASSWORD}
-      POSTGRES: postgres://postgres:postgres@postgres:5432/grafana?sslmode=disable
-    depends_on:
-      - postgres
-    networks:
-      - redprof_network
-      - postgres_network
-
-  grafana:
-    image: grafana/grafana:5.3.4
-    environment:
-      GF_SERVER_ROOT_URL: https://grafana.adtac.in
-    volumes:
-      - grafana_data:/var/lib/grafana
-    networks:
-      - grafana_network
-      - postgres_network
-    depends_on:
-      - postgres
 
   nextcloud:
     image: nextcloud:15
@@ -86,18 +60,30 @@ services:
     volumes:
       - registry_data:/var/lib/registry
 
+  plex:
+    image: plexinc/pms-docker
+    volumes:
+      - plex_data:/config
+      - /mnt/media:/data:rshared
+    networks:
+      - plex_network
+    environment:
+      - TZ=America/Toronto
+      - PLEX_CLAIM=${PLEX_CLAIM}
+      - ADVERTISE_IP=http://plex.adtac.in:443/
+    hostname: plex-adtac-1
+
 networks:
-  grafana_network:
-  redprof_network:
   postgres_network:
   nextcloud_network:
   registry_network:
+  plex_network:
 
 volumes:
-  grafana_data:
   postgres_data:
   postgres_logs:
   nextcloud_data:
   nextcloud_config:
   nextcloud_apps:
   registry_data:
+  plex_data:
