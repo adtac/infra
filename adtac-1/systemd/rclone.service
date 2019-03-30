@@ -5,14 +5,14 @@ After=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/rclone mount \
-        --config=/home/adtac/.rclone.conf \
-        --read-only \
-        --dir-cache-time 30m \
-        --timeout 1h \
-        --allow-other \
-        --drive-chunk-size 256M \
-        --dir-cache-time=60m \
-        crypt: /mnt/media
+          --config=/home/adtac/.rclone.conf \
+          --read-only \
+          --dir-cache-time 30m \
+          --timeout 1h \
+          --allow-other \
+          --drive-chunk-size 256M \
+          --dir-cache-time=60m \
+          crypt: /mnt/media
 ExecStop=/bin/fusermount -u /mnt/media
 Restart=on-failure
 RestartSec=30
