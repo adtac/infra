@@ -8,7 +8,6 @@ services:
       - 443:443
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-      - /etc/htpasswd:/etc/htpasswd
     depends_on:
       - io
       - version
@@ -72,4 +71,5 @@ networks:
 
 volumes:
   postgres_data:
+  postgres_logs:
   dco_data:
