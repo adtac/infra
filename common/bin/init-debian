@@ -46,27 +46,13 @@ parse-args() {
   done
 }
 
-setup-packages() {
-  apt update
-  apt install -y \
-    neovim curl zsh git stow htop fail2ban apt-transport-https \
-    ca-certificates software-properties-common
-
-  curl -s https://download.docker.com/linux/debian/gpg | apt-key add -
-  echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee -a /etc/apt/sources.list.d/docker.list
-  apt update
-  apt install -y docker-ce
-
-  systemctl enable --now docker
-}
-
 setup-iptables() {
   if [[ ! -z "$ports" ]]; then
     iptables -F
     iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
     iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
     iptables -A INPUT -i lo -j ACCEPT
-    for port in "$port"; do
+    for port in $port; do
       iptables -A INPUT -p tcp --dport "$port" -j ACCEPT
     done
     iptables -A INPUT -j DROP
@@ -76,6 +62,20 @@ setup-iptables() {
   echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
   apt update
   apt install -y iptables-persistent
+}
+
+setup-packages() {
+  apt update
+  apt install -y \
+    neovim curl zsh git stow htop apt-transport-https \
+    ca-certificates software-properties-common
+
+  curl -s https://download.docker.com/linux/debian/gpg | apt-key add -
+  echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee -a /etc/apt/sources.list.d/docker.list
+  apt update
+  apt install -y docker-ce
+
+  systemctl enable --now docker
 }
 
 setup-user() {
