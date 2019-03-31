@@ -3,5 +3,5 @@
 certbot certonly \
   --server https://acme-v02.api.letsencrypt.org/directory \
   --dns-route53 --dns-route53-propagation-seconds 30 \
-  -d '*.dev.commento.io' -d '*.commento.io' \
+  -d '*.commento.io' -d 'commento.io' \
   -n --agree-tos --email adtac@commento.io
