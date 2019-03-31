@@ -1,0 +1,75 @@
+<html>
+  <body>
+    <title>Commento Demo</title>
+    <link rel="icon" href="data:null">
+    <script defer
+      src="https://cdn.commento.io/js/commento.js">
+    </script>
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0">
+  </body>
+
+  <style>
+  .content-wrapper {
+    margin-top: 32px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .content {
+    color: #495057;
+    font-family: 'Source Sans Pro', sans-serif;
+    width: 100%;
+    max-width: 700px;
+  }
+
+  .head {
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 10px;
+  }
+
+  h3 {
+    color: #495057;
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .text {
+    padding-top: 20px;
+    line-height: 24px;
+    text-align: justify;
+  }
+
+  @media screen and (max-width: 700px) {
+    .content {
+      width: 100%;
+    }
+  }
+
+  a {
+    color: #228be6;
+    text-decoration: none;
+  }
+  </style>
+
+  <div class="content-wrapper">
+    <div class="content">
+      <div class="head">
+        <h3>Commento Demo</h3>
+      </div>
+
+      <div class="text">
+        Hi, I'm Adhityaa and I created <a href="https://commento.io">Commento</a>. This is a minimal demo page for you to play around with. Note that your comments will be automatically deleted after 3 days to keep the demo pristine.<br><br>
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br><br>
+
+        You can use <a href="https://en.wikipedia.org/wiki/Markdown#Example">Markdown</a> to style your comments.
+      </div>
+
+      <br>
+
+      <div id="commento">
+      </div>
+    </div>
+  </div>
+</html>

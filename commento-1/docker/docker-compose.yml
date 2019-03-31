@@ -1,0 +1,75 @@
+version: '2'
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/htpasswd:/etc/htpasswd
+    depends_on:
+      - io
+      - version
+      - dco
+    networks:
+      - io_network
+      - version_network
+      - dco_network
+
+  certbot:
+    build: ./certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+
+  postgres:
+    image: postgres:10.5
+    command: postgres -c config_file=/etc/postgresql.conf
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/logs/postgresql
+      - ./postgresql/postgresql.conf:/etc/postgresql.conf
+    networks:
+      - postgres_network
+
+  io:
+    image: registry.gitlab.com/commento/commento-io:v1.6.2
+    environment:
+      COMMENTO_CONFIG_FILE: /etc/commento.env
+      COMMENTO_ORIGIN: https://commento.io
+      COMMENTO_CDN_PREFIX: https://cdn.commento.io
+      COMMENTO_POSTGRES: postgres://postgres:postgres@postgres:5432/commento_io?sslmode=disable
+    volumes:
+      - /etc/commento.env:/etc/commento.env
+    networks:
+      - io_network
+      - postgres_network
+    depends_on:
+      - postgres
+
+  version:
+    image: registry.gitlab.com/commento/misc/version:latest
+    networks:
+      - version_network
+
+  dco:
+    image: registry.gitlab.com/commento/misc/dco:latest
+    volumes:
+      - dco_data:/data
+    networks:
+      - dco_network
+
+networks:
+  nginx_network:
+  io_network:
+  postgres_network:
+  version_network:
+  dco_network:
+
+volumes:
+  postgres_data:
+  dco_data:

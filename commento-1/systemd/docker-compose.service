@@ -1,0 +1,13 @@
+[Unit]
+Description=commento-1 docker services
+After=network.target docker.service
+
+[Service]
+Type=simple
+ExecStartPre=-/usr/bin/docker rmi infra_nginx
+ExecStart=/usr/bin/docker-compose -p infra -f /infra/commento-1/docker-compose.yml up
+ExecStop=/usr/bin/docker-compose -p infra -f /infra/commento-1/docker-compose.yml down
+WorkingDirectory=/infra/commento-1
+
+[Install]
+WantedBy=multi-user.target
