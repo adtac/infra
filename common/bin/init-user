@@ -10,8 +10,8 @@ create-dirs() {
 }
 
 setup-infra() {
-  mkdir -p src/github.com/adtac
-  cd src/github.com/adtac
+  mkdir -p $HOME/src/github.com/adtac
+  cd $HOME/src/github.com/adtac
   git clone https://github.com/adtac/infra.git
   cd infra
 }
