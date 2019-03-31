@@ -1,5 +1,9 @@
 all: sway termite zsh vim i3status
 
+server: zsh vim
+
+workstation: all
+
 sway:
 	mkdir -p ${HOME}/.config/sway
 	[ -f ${HOME}/.config/sway/config ] || ln -s $(pwd)/sway/config ${HOME}/.config/sway/config
