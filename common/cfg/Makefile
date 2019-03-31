@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 all: _sway _termite _zsh _vim _i3status
 
 server: _zsh _vim
