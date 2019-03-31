@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+set -e
+
+display-help() {
+  cat <<help_msg
+usage: init OPTIONS
+Sets up a new Debian server. Must be executed as root. Must contain a directory
+named \$HOST at the root level.
+
+required arguments:
+  -u     username of the user to create
+
+optional arguments:
+  -p     comma-separated incoming TCP ports to open (defaults: 22, 80, 443)
+  -h     show this help message and exit
+help_msg
+
+  printf "$help_msg"
+  exit 0
+}
+
+type=
+username=
+port=
+
+parse-args() {
+  while getopts "t:u:p:h" opt; do
+    case "$opt" in
+      u) username=$OPTARG;;
+      p) ports=$OPTARG;;
+      *) display-help;;
+    esac
+  done
+
+  if [[ -z "$username" ]]; then
+    printf "error: -u flag empty\n"
+    exit 1
+  fi
+
+  ports=$(tr ',' ' ' <<<"$ports" | xargs)
+  for port in $ports; do
+    case "$port" in
+      [0-9]*) ;;
+      *) printf "error: port %s not a number\n" "$port"; exit 1;;
+    esac
+  done
+}
+
+setup-packages() {
+  apt update
+  apt install -y \
+    neovim curl zsh git stow htop fail2ban apt-transport-https \
+    ca-certificates software-properties-common
+
+  curl -s https://download.docker.com/linux/debian/gpg | apt-key add -
+  echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee -a /etc/apt/sources.list.d/docker.list
+  apt update
+  apt install -y docker-ce
+
+  systemctl enable --now docker
+}
+
+setup-iptables() {
+  if [[ ! -z "$ports" ]]; then
+    iptables -F
+    iptables -A INPUT -i lo -j ACCEPT
+    iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+    iptables -A INPUT -m state --ctstate ESTABLISHED -j ACCEPT
+    for port in "$port"; do
+      iptables -A INPUT -p tcp --dport "$port" -j ACCEPT
+    done
+    iptables -A INPUT -j DROP
+  fi
+
+  echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+  echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+  apt update
+  apt install -y iptables-persistent
+}
+
+setup-user() {
+  adduser --gecos "" $username
+  usermod -aG sudo $username
+  usermod -aG docker $username
+  su - $username -c "chsh -s $(which zsh)"
+}
+
+clear-motd() {
+  rm -vrf /etc/update-motd.d/*
+  echo -n "" >/etc/motd
+}
+
+main() {
+  parse-args $*
+  setup-iptables
+  setup-packages
+  setup-user
+  clear-motd
+}
+
+main $*
