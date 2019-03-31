@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+if [[ $EUID == 0 ]]; then
+  printf "error: this script cannot be run this as root\n"
+  exit 1
+fi
+
+create-dirs() {
+  mkdir $HOME/src $HOME/tmp
+}
+
+setup-infra() {
+  mkdir -p src/github.com/adtac
+  cd src/github.com/adtac
+  git clone https://github.com/adtac/infra.git
+  cd infra
+}
+
+setup-bin-cfg() {
+  ln -s $(pwd)/$HOSTNAME/bin $HOME/bin
+  cd cfg
+  make $1
+}
+
+main() {
+  create-dirs
+  setup-infra
+  setup-bin-cfg $*
+}
+
+main $*
