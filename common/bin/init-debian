@@ -5,8 +5,7 @@ set -e
 display-help() {
   cat <<help_msg
 usage: init OPTIONS
-Sets up a new Debian server. Must be executed as root. Must contain a directory
-named \$HOST at the root level.
+Sets up a new Debian server. Must be executed as root.
 
 required arguments:
   -u     username of the user to create
