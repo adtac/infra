@@ -21,6 +21,9 @@ services:
     build: ./certbot
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
 
   postgres:
     image: postgres:10.5
