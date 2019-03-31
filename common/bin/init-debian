@@ -52,7 +52,7 @@ setup-iptables() {
     iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
     iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
     iptables -A INPUT -i lo -j ACCEPT
-    for port in $port; do
+    for port in $ports; do
       iptables -A INPUT -p tcp --dport "$port" -j ACCEPT
     done
     iptables -A INPUT -j DROP
