@@ -63,9 +63,9 @@ setup-packages() {
 setup-iptables() {
   if [[ ! -z "$ports" ]]; then
     iptables -F
-    iptables -A INPUT -i lo -j ACCEPT
     iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-    iptables -A INPUT -m state --ctstate ESTABLISHED -j ACCEPT
+    iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
+    iptables -A INPUT -i lo -j ACCEPT
     for port in "$port"; do
       iptables -A INPUT -p tcp --dport "$port" -j ACCEPT
     done
