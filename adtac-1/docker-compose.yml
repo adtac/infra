@@ -21,7 +21,7 @@ services:
     build: ./certbot
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-      - /etc/digitalocean.ini:/etc/digitalocaen.ini
+      - /etc/digitalocean.ini:/etc/digitalocean.ini
 
   postgres:
     image: postgres:10.5
