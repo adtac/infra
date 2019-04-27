@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 .PHONY: workstation
-workstation: sway i3status termite mpdscribble zathura zsh vim git
+workstation: sway i3status termite ncmpcpp mpdscribble zathura zsh vim git
 
 .PHONY: server
 server: zsh vim git
@@ -41,3 +41,7 @@ mpdscribble:
 .PHONY: zathura
 zathura:
 	[ -d ${HOME}/.config/zathura ] || ln -s $(shell pwd)/zathura ${HOME}/.config/zathura
+
+.PHONY: ncmpcpp
+ncmpcpp:
+	[ -d ${HOME}/.ncmpcpp ] || ln -s $(shell pwd)/ncmpcpp ${HOME}/.ncmpcpp
