@@ -4,6 +4,9 @@ font VT323 13
 # start a terminal
 bindsym $mod+Return exec /bin/sh termite-custom
 
+# toggle between the current and the previous workspace
+bindsym $mod+period exec python3 ~/bin/sway-toggle-ws
+
 bindsym $mod+space exec --no-startup-id rofi -show run -font "VT323 14" -normal-window
 
 # kill focused window
@@ -93,18 +96,19 @@ mode "resize" {
 bindsym $mod+shift+r mode "resize"
 
 bar {
-  font VT323 14
+  font VT323 13
   strip_workspace_numbers yes
   status_command ~/bin/swaystatus
 
   position top
-  height 20
+  height 25
 
   colors {
     background         #fff4e6ff
-    statusline         #495057ff
+    statusline         #295057ff
     focused_workspace  #ffe3e3ff #ffe3e3ff #495057ff
     inactive_workspace #fff4e6ff #fff4e6ff #495057ff
+    separator          #ff0000ff
   }
 }
 
