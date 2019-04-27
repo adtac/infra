@@ -1,0 +1,69 @@
+[global]
+    startup_notification = false
+
+    monitor = 0
+    follow = mouse
+
+    title = Dunst
+    class = Dunst
+    geometry = "300x5-15+40"
+    frame_width = 0
+    notification_height = 0
+    shrink = no
+    transparency = 0
+
+    padding = 8
+    horizontal_padding = 8
+
+    format = "[%a] <b>%s</b>\n%b"
+    font = VT323 13
+    line_height = 0
+    markup = full
+    alignment = left
+    ignore_newline = no
+    word_wrap = no
+    ellipsize = end
+
+    indicate_hidden = yes
+
+    sort = yes
+
+    separator_height = 1
+    separator_color = "#1c7ed6"
+
+    idle_threshold = 120
+    show_age_threshold = 120
+
+    stack_duplicates = false
+    hide_duplicate_count = false
+    show_indicators = no
+
+    icon_position = off
+
+    sticky_history = yes
+    history_length = 20
+
+[experimental]
+    per_monitor_dpi = false
+
+[shortcuts]
+    close = ctrl+space
+    context = ctrl+shift+space
+    close_all = ctrl+shift+space
+    history = ctrl+grave
+    context = ctrl+shift+period
+
+[urgency_low]
+    background = "#495057"
+    foreground = "#f8f9fa"
+    timeout = 1
+
+[urgency_normal]
+    background = "#1971c2"
+    foreground = "#e7f5ff"
+    timeout = 5
+
+[urgency_critical]
+    background = "#f03e3e"
+    foreground = "#fff5f5"
+    timeout = 0
