@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 .PHONY: workstation
-workstation: sway i3status termite zsh vim git
+workstation: sway i3status termite mpdscribble zsh vim git
 
 .PHONY: server
 server: zsh vim git
@@ -31,4 +31,9 @@ vim:
 
 .PHONY: git
 git:
-	[ -f ${HOME}/.gitconfig ] || ls -s $(shell pwd)/git/.gitconfig ${HOME}/.gitconfig
+	[ -f ${HOME}/.gitconfig ] || ln -s $(shell pwd)/git/.gitconfig ${HOME}/.gitconfig
+
+.PHONY: mpdscribble
+mpdscribble:
+	[ -d ${HOME}/.mpdscribble ] || mkdir ${HOME}/.mpdscribble
+	[ -f ${HOME}/.mpdscribble/mpdscribble.conf ] || sed "s/LASTFM_PASSWORD/$$(pass last.fm/adtac)/g" $(shell pwd)/mpdscribble/mpdscribble.conf >${HOME}/.mpdscribble/mpdscribble.conf
