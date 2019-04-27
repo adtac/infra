@@ -1,9 +1,9 @@
 general {
+  colors         = false
   output_format  = "none"
   color_good     = "#67b510"
   color_degraded = "#b58900"
   color_bad      = "#dc322f"
-  colors         = false
   interval       = 30
   separator      = "    "
 }
@@ -14,12 +14,12 @@ order += "wireless wlp2s0"
 order += "time"
 
 wireless wlp2s0 {
-  format_up   = "SSID: %essid"
-  format_down = "WiFi: Not connected"
+  format_up   = "⠴ %essid"
+  format_down = "⠴ Not connected"
 }
 
 battery 0 {
-  format                   = "Battery: %percentage"
+  format                   = "⚛ %percentage"
   integer_battery_capacity = true
   last_full_capacity       = true
   path                     = /sys/class/power_supply/BAT%d/uevent
@@ -30,5 +30,5 @@ run_watch DHCP {
 }
 
 time {
-  format = "%d %b %H:%M "
+  format = "%d-%b %H:%M"
 }
