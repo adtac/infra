@@ -1,13 +1,10 @@
 SHELL := /bin/bash
 
-.PHONY: all
-all: sway termite zsh vim i3status
+.PHONY: workstation
+workstation: sway i3status termite zsh vim git
 
 .PHONY: server
-server: zsh vim
-
-.PHONY: workstation
-workstation: all
+server: zsh vim git
 
 .PHONY: sway
 sway:
@@ -31,3 +28,7 @@ vim:
 	[ -f ${HOME}/.vimrc ] || ln -s $(shell pwd)/vim/.vimrc ${HOME}/.vimrc
 	[ -d ${HOME}/.vim ] || ln -s $(shell pwd)/vim/.vim ${HOME}/.vim
 	command vim +PlugInstall +qa
+
+.PHONY: git
+git:
+	[ -f ${HOME}/.gitconfig ] || ls -s $(shell pwd)/git/.gitconfig ${HOME}/.gitconfig
