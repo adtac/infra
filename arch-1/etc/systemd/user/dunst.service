@@ -1,0 +1,8 @@
+[Unit]
+Description=dunst notifications
+Wants=graphical.target
+After=graphical.target
+
+[Service]
+Type=simple
+ExecStart=dunst

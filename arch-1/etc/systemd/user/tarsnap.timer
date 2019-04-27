@@ -1,0 +1,11 @@
+[Unit]
+Description=tarsnap backup every four hours
+Wants=network-online.target
+After=network.target network-online.target
+
+[Timer]
+OnActiveSec=0min
+AccuracySec=1sec
+OnCalendar=*:00:00
+Unit=tarsnap.service
+Persistent=true

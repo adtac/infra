@@ -1,0 +1,8 @@
+[Unit]
+Description=tarsnap backup
+Wants=network-online.target
+After=network.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/adtac/bin/xtarsnap -p tarsnap.com/key -d ~/docs

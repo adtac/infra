@@ -1,0 +1,18 @@
+[Unit]
+Description=rclone mount
+Wants=network-online.target
+After=network.target network-online.target
+
+[Service]
+Type=simple
+ExecStartPre=-/usr/bin/fusermount -uz /home/adtac/media/music
+ExecStart=/usr/bin/rclone mount \
+          --dir-cache-time 30m \
+          --timeout 1h \
+          --allow-other \
+          --drive-chunk-size 256M \
+          --dir-cache-time=60m \
+          crypt:music /home/adtac/media/music
+ExecStop=-/usr/bin/fusermount -uz /home/adtac/media/music
+Restart=always
+RestartSec=60
