@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 .PHONY: workstation
-workstation: sway i3status termite mpdscribble zsh vim git
+workstation: sway i3status termite mpdscribble zathura zsh vim git
 
 .PHONY: server
 server: zsh vim git
@@ -37,3 +37,7 @@ git:
 mpdscribble:
 	[ -d ${HOME}/.mpdscribble ] || mkdir ${HOME}/.mpdscribble
 	[ -f ${HOME}/.mpdscribble/mpdscribble.conf ] || sed "s/LASTFM_PASSWORD/$$(pass last.fm/adtac)/g" $(shell pwd)/mpdscribble/mpdscribble.conf >${HOME}/.mpdscribble/mpdscribble.conf
+
+.PHONY: zathura
+zathura:
+	[ -d ${HOME}/.config/zathura ] || ln -s $(shell pwd)/zathura ${HOME}/.config/zathura

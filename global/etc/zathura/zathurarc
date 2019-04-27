@@ -1,0 +1,12 @@
+set font "VT323 14"
+
+set default-bg "#fff4e6"
+set default-fg "#495057"
+set statusbar-bg "#fff4e6"
+set statusbar-fg "#495057"
+
+set statusbar-h-padding 8
+set statusbar-v-padding 8
+
+map [presentation] j navigate next
+map [presentation] k navigate previous
