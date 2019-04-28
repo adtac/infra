@@ -1,10 +1,10 @@
 SHELL := /bin/bash
 
 .PHONY: workstation
-workstation: bin etc
+workstation: bin etc homedirs
 
 .PHONY: server
-workstation: bin etc
+server: bin etc homedirs
 
 .PHONY: bin
 bin:
@@ -13,3 +13,7 @@ bin:
 .PHONY: etc
 etc:
 	cd etc && $(MAKE) $(MAKECMDGOALS)
+
+.PHONY: homedirs
+homedirs:
+	cd ${HOME} && mkdir -p dl docs media mnt src tmp venv
