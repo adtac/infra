@@ -5,14 +5,17 @@ After=network.target network-online.target
 
 [Service]
 Type=simple
-ExecStartPre=-/usr/bin/fusermount -uz /home/adtac/media/music
-ExecStart=/usr/bin/rclone mount \
-          --dir-cache-time 30m \
-          --timeout 1h \
+Restart=always
+RestartSec=30
+ExecStartPre=-/usr/bin/fusermount -uz %h/media/music
+ExecStart=/usr/bin/rclone mount crypt:music %h/media/music \
+          --config=%/.config/rclone/secrets \
+          --dir-cache-time 5m \
+          --timeout 5m \
           --allow-other \
           --drive-chunk-size 256M \
-          --dir-cache-time=60m \
-          crypt:music /home/adtac/media/music
-ExecStop=-/usr/bin/fusermount -uz /home/adtac/media/music
-Restart=always
-RestartSec=60
+
+ExecStop=-/usr/bin/fusermount -uz %h/media/music
+
+[Install]
+WantedBy=multi-user.target
