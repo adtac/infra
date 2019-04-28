@@ -14,7 +14,7 @@ services:
   certbot:
     build: ./certbot
     volumes:
-      - ${HOME}/.config/letsencrypt:/etc/letsencrypt
+      - /etc/letsencrypt:/etc/letsencrypt
       - ${HOME}/.config/digitalocean/digitalocean.ini:/etc/digitalocean.ini
 
   plex:
