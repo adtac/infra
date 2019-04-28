@@ -39,6 +39,7 @@ services:
 
 networks:
   plex_network:
+  cgit_network:
 
 volumes:
   plex_data:
