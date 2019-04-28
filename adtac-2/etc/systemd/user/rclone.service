@@ -1,0 +1,21 @@
+[Unit]
+Description=rclone mount
+Wants=network-online.target
+After=network.target network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=30
+ExecStartPre=-/usr/bin/fusermount -uz %h/media
+ExecStart=/usr/bin/rclone mount crypt: %h/media \
+          --config=%/.config/rclone/secrets \
+          --dir-cache-time 5m \
+          --timeout 5m \
+          --allow-other \
+          --drive-chunk-size 256M \
+          --read-only
+ExecStop=-/bin/fusermount -uz /mnt/media
+
+[Install]
+WantedBy=multi-user.target

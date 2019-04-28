@@ -1,0 +1,4 @@
+#!/bin/sh
+
+fcgiwrap -s unix:/run/fcgi.sock &
+exec nginx
