@@ -1,10 +1,9 @@
-alias vim="nvim"
-alias vi="nvim"
-
+alias vi="vim"
+alias v="vim"
 alias n="ncmpcpp"
 alias r="ranger"
-alias v="nvim"
-alias w='ssh ssh.adtac.in -t tmux attach -t weechat'
+alias w="mosh 1.adtac.in -- tmux attach -t weechat"
+alias z="zathura"
 
 alias s="ls"
 alias l="ls -al"
