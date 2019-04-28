@@ -27,7 +27,7 @@ services:
     environment:
       - TZ=America/Toronto
       - PLEX_CLAIM=${PLEX_CLAIM}
-      - ADVERTISE_IP=http://plex.adtac.in:443/
+      - ADVERTISE_IP=https://plex.adtac.in/
     hostname: plex-adtac-2
 
   cgit:
