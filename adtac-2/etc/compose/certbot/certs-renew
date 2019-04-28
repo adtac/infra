@@ -1,11 +1,11 @@
 #!/bin/sh
 
 while true; do
+  sleep 86400
   certbot certonly \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --preferred-challenges dns \
     -d '*.adtac.in' -d 'adtac.in' \
     --dns-digitalocean --dns-digitalocean-credentials /etc/digitalocean.ini \
     -n --agree-tos --email adtac@adtac.in
-  sleep 86400
 done
