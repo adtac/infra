@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 .PHONY: all
-all: systemd
+all: systemd compose
 
 .PHONY: systemd
 systemd:
