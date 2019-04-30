@@ -5,8 +5,7 @@ After=network.target network-online.target
 
 [Service]
 Type=simple
-Restart=always
-RestartSec=30
+RestartSec=60
 ExecStartPre=-/usr/bin/fusermount -uz %h/media
 ExecStart=/usr/bin/rclone mount crypt: %h/media \
           --config=%h/.config/rclone/secrets \
