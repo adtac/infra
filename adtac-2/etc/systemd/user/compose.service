@@ -6,6 +6,7 @@ After=network.target docker.service
 Type=simple
 WorkingDirectory=%h/.config/compose
 ExecStartPre=-/usr/bin/docker rmi compose_nginx
+ExecStartPre=-/usr/bin/docker rmi compose_cgit
 ExecStart=/usr/bin/docker-compose up
 ExecStop=/usr/bin/docker-compose down
 
