@@ -1,6 +1,6 @@
 [Unit]
 Description=docker-compose services
-After=network.target docker.service
+After=network.target docker.service rclone.service
 
 [Service]
 Type=simple
