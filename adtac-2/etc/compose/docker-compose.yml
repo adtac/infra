@@ -11,6 +11,7 @@ services:
       - ${HOME}/www:/www
     networks:
       - plex_network
+      - cgit_network
 
   certbot:
     build: ./certbot
