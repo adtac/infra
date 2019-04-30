@@ -1,5 +1,5 @@
 enable-commit-graph=0
-clone-url=https://git.adtac.in/$CGIT_REPO_URL git@git.adtac.in:$CGIT_REPO_URL
+clone-url=https://git.adtac.in/$CGIT_REPO_URL ssh://git@git.adtac.in:$CGIT_REPO_URL
 enable-http-clone=1
 logo=
 root-title=adtac's git repositories
