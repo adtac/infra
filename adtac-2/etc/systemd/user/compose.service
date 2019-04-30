@@ -6,7 +6,7 @@ After=network.target docker.service
 Type=simple
 Restart=always
 WorkingDirectory=%h/.config/compose
-ExecStartPre=-/usr/bin/docker rmi infra_nginx
+ExecStartPre=-/usr/bin/docker rmi compose_nginx
 ExecStart=/usr/bin/docker-compose up
 ExecStop=/usr/bin/docker-compose down
 
