@@ -3,10 +3,10 @@
 get_volume() {
   mute=$(cntrl volume is-muted)
   if [[ "$mute" == "yes" ]]; then
-    printf "Volume: Muted"
+    printf "Muted"
   else
     volume=$(cntrl volume get)
-    printf "Volume: %s%%" "$volume"
+    printf "%s" "$volume"
   fi
 }
 
@@ -26,10 +26,8 @@ do
   volume=$(get_volume)
   brightness=$(cntrl brightness get)
   music=$(get_music)
+  temp=$(cntrl temperature get)
+  mem=$(cntrl memory get)
 
-  out=
-  for obj in "$music" "$volume" "Brightness: $brightness%" "$line  "; do
-    out="$out     $obj"
-  done
-  echo "$out"
+  echo "$music    ⛀ $mem    ♨ $temp    ∼ $volume    ⚙ $brightness    $line "
 done
