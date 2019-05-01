@@ -5,15 +5,14 @@ After=network.target network-online.target
 
 [Service]
 Type=simple
-Restart=always
 RestartSec=30
 ExecStartPre=-/usr/bin/fusermount -uz %h/media/music
 ExecStart=/usr/bin/rclone mount crypt:music %h/media/music \
-          --config=%/.config/rclone/secrets \
+          --config=%h/.config/rclone/secrets \
           --dir-cache-time 5m \
           --timeout 5m \
           --allow-other \
-          --drive-chunk-size 256M \
+          --drive-chunk-size 256M
 
 ExecStop=-/usr/bin/fusermount -uz %h/media/music
 
