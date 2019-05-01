@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk update && apk add nginx fcgiwrap cgit
+RUN apk add --no-cache nginx fcgiwrap cgit
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY cgitrc /etc/cgitrc
