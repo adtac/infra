@@ -17,4 +17,4 @@ ExecStart=/usr/bin/rclone mount crypt: %h/media \
 ExecStop=-/bin/fusermount -uz /mnt/media
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
