@@ -7,16 +7,30 @@ if [[ "$1" == "-r" ]]; then
 fi
 
 if [[ "$1" == "volume" ]]; then
+  idx=$(pacmd list-sinks \
+    | awk '/.*priority:|index:/{print $NF}' \
+    | paste -d " " - - \
+    | sort -k2 -nr \
+    | head -n 1 \
+    | awk '{print $1}')
   if [[ "$2" == "get" ]]; then
-    pactl list sinks | awk '/RUNNING/,/Volume/' | grep "Volume: [^:]*: [0-9]* / *\([0-9]*\)" -o | tail -n 1 | awk '{ print $5 }'
+    pacmd list-sinks \
+      | awk '/.*index: '$idx'/,/volume:/' \
+      | tail -n 1 \
+      | grep -o '[0-9]*%' \
+      | head -n 1  # left and right should have the same volume, hopefully
   elif [[ "$2" == "is-muted" ]]; then
-    pactl list sinks | awk '/RUNNING/,/Mute/' | grep Mute | tail -n 1 | awk '{ print $2 }'
+    pacmd list-sinks \
+      | awk '/.*index: '$idx'/,/muted:/' \
+      | tail -n 1 \
+      | awk '{print $2}'
+    pactl list sinks | awk '/RUNNING|IDLE/,/Mute/' | grep Mute | tail -n 1 | awk '{ print $2 }'
   elif [[ "$2" == "set" ]]; then
-    pactl set-sink-volume $(pacmd list-sinks | awk '/* index:/{print $3}') $3%
+    pactl set-sink-volume $idx $3%
   elif [[ "$2" == "inc" ]]; then
-    pactl set-sink-volume $(pacmd list-sinks | awk '/* index:/{print $3}') +$3%
+    pactl set-sink-volume $idx +$3%
   elif [[ "$2" == "dec" ]]; then
-    pactl set-sink-volume $(pacmd list-sinks | awk '/* index:/{print $3}') -$3%
+    pactl set-sink-volume $idx -$3%
   fi
 fi
 
@@ -37,13 +51,25 @@ fi
 
 if [[ "$1" == "brightness" ]]; then
   if [[ "$2" == "get" ]]; then
-    echo $(light -G) | awk '{print int($1+0.5)}'
+    echo $(light -G) | awk '{printf "%d%%", int($1+0.5)}'
   elif [[ "$2" == "set" ]]; then
     light -S $3
   elif [[ "$2" == "inc" ]]; then
     light -A $3
   elif [[ "$2" == "dec" ]]; then
     light -U $3
+  fi
+fi
+
+if [[ "$1" == "temperature" ]]; then
+  if [[ "$2" == "get" ]]; then
+    sensors | grep Package | awk '{ print $4 }' | cut -d '+' -f 2
+  fi
+fi
+
+if [[ "$1" == "memory" ]]; then
+  if [[ "$2" == "get" ]]; then
+    free -m | grep Mem | awk '{ printf "%.1fG", $3 / 1024.0 }'
   fi
 fi
 
