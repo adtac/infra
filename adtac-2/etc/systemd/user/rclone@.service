@@ -6,15 +6,16 @@ After=network.target network-online.target
 [Service]
 Type=simple
 RestartSec=60
-ExecStartPre=-/usr/bin/fusermount -uz %h/media
-ExecStart=/usr/bin/rclone mount crypt: %h/media \
+ExecStartPre=-/usr/bin/mkdir -p %h/media/%i
+ExecStartPre=-/usr/bin/fusermount -uz %h/media/%i
+ExecStart=/usr/bin/rclone mount crypt:%i %h/media/%i \
           --config=%h/.config/rclone/secrets \
           --dir-cache-time 5m \
           --timeout 5m \
           --allow-other \
           --drive-chunk-size 256M \
           --read-only
-ExecStop=-/bin/fusermount -uz /mnt/media
+ExecStop=-/bin/fusermount -uz /mnt/media/%i
 
 [Install]
 WantedBy=default.target
