@@ -9,7 +9,7 @@ RestartSec=60
 ExecStartPre=-/usr/bin/mkdir -p %h/media/%i
 ExecStartPre=-/usr/bin/fusermount -uz %h/media/%i
 ExecStart=/usr/bin/sshfs 2.adtac.in:media/%i %h/media/%i -o reconnect,ServerAliveInterval=15,ServerAliveCountMax=5
-ExecStartPre=-/usr/bin/fusermount -uz %h/media/%i
+ExecStop=-/usr/bin/fusermount -uz %h/media/%i
 
 [Install]
 WantedBy=multi-user.target
