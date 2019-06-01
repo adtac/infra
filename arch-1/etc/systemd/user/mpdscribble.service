@@ -1,0 +1,11 @@
+[Unit]
+Description=lastfm integration
+Wants=mpd.service
+After=mpd.service
+
+[Service]
+Type=simple
+ExecStart=mpdscribble --no-daemon
+
+[Install]
+WantedBy=default.target
