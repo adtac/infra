@@ -6,3 +6,6 @@ After=graphical.target
 [Service]
 Type=simple
 ExecStart=dunst
+
+[Install]
+WantedBy=default.target
