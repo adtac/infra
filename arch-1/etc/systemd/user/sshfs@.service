@@ -5,6 +5,7 @@ After=network.target network-online.target
 
 [Service]
 Type=simple
+Restart=always
 RestartSec=60
 ExecStartPre=-/usr/bin/mkdir -p %h/media/%i
 ExecStartPre=-/usr/bin/fusermount -uz %h/media/%i
