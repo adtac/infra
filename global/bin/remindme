@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+set -e
+
+display_help() {
+  cat << help_msg
+usage: remindme COMMAND OPTIONS
+notifies you about something after some time using notify-send
+
+required arguments:
+  -t       time after which the reminder should appear (in seconds)
+  -m       message to include in the reminder
+
+optional arguments:
+  -u       urgency, must be low, normal, or critical
+  -h       show this help message and exit
+help_msg
+
+  printf "%s" "$help_msg"
+  exit
+}
+
+time=
+message=
+urgency=normal
+
+parse_args() {
+  while getopts "t:m:u:" opt; do
+    case "$opt" in
+      t) time=$OPTARG;;
+      m) message=$OPTARG;;
+      u) urgency=$OPTARG;;
+      *) display_help;;
+    esac
+  done
+
+  if [[ -z "$time" ]]; then
+    printf "remindme: error: no time specified\n"
+    exit 1
+  fi
+
+  if [[ ! "$time" =~ ^[0-9]+$ ]]; then
+    printf "remindme: error: '%s' is not a number\n" "$time"
+    exit 1
+  fi
+
+  if [[ -z "$message" ]]; then
+    printf "remindme: error: no message specified\n"
+    exit 1
+  fi
+
+  if [[ "$urgency" != "low" && "$urgency" != "normal" && "$urgency" != "critical" ]]; then
+    printf "remindme: error: invalid urgency: must be low, normal, or critical\n"
+    exit 1
+  fi
+}
+
+begin_timer() {
+  sleep "$time"
+  notify-send -u "$urgency" "${urgency}-priority" "$message"
+}
+
+main() {
+  parse_args $*
+
+  begin_timer &
+  disown
+
+  printf "you will receive a reminder at: "
+  date --date="+$time seconds"
+}
+
+main $*
