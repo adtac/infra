@@ -1,7 +1,7 @@
 [Unit]
-Description=tarsnap backup every four hours
-Wants=network-online.target
-After=network.target network-online.target
+Description=run gpg-agent startup trigger every hour
+Wants=graphical.target
+After=graphical.target
 
 [Timer]
 OnActiveSec=0min

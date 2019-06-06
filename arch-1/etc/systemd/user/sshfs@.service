@@ -13,4 +13,4 @@ ExecStart=/usr/bin/sshfs -f 2.adtac.in:media/%i %h/media/%i -o reconnect,ServerA
 ExecStop=-/usr/bin/fusermount -uz %h/media/%i
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
