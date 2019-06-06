@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+set -e
+
+display_help() {
+  cat << help_msg
+usage: xtarsnap COMMAND OPTIONS
+tarsnap helper script using keys stored in pass(1)
+
+available commands:
+  list     list archives and print stats
+  new      make a new archive
+
+required arguments:
+  -k       key file path within the pass store
+  -d       directory to backup
+
+optional arguments:
+  -h       show this help message and exit
+help_msg
+
+  printf "%s" "$help_msg"
+  exit
+}
+
+key_file=
+directory=
+
+parse_args() {
+  while getopts "k:d:" opt; do
+    case "$opt" in
+      k) key_file=$OPTARG;;
+      d) directory=$OPTARG;;
+      *) display_help;;
+    esac
+  done
+
+  if [[ -z "$key_file" ]]; then
+    printf "xtarsnap: error: no input tarsnap key file specified\n"
+    exit 1
+  fi
+
+  if [[ -z "$directory" ]]; then
+    printf "xtarsnap: error: no input directory specified\n"
+    exit 1
+  fi
+
+  if [[ ! -d "$directory" ]]; then
+    printf "xtarsnap: error: %s does not exist\n" "$directory"
+    exit 1
+  fi
+}
+
+plaintext_key_file=
+
+decrypt_key() {
+  plaintext_key_file=$(mktemp -u)
+  touch "$plaintext_key_file"
+  chmod 0600 "$plaintext_key_file"
+  pass "$key_file" >"$plaintext_key_file"
+  chmod 0400 "$plaintext_key_file"
+}
+
+cleanup() {
+  rm -f $plaintext_key_file
+}
+
+list_archives() {
+  decrypt_key
+  tarsnap --list-archives \
+    --keyfile $plaintext_key_file \
+    --cachedir ~/.local/share/tarsnap | grep "^$(basename $directory)-"
+  tarsnap --print-stats --humanize-numbers \
+    --keyfile $plaintext_key_file \
+    --cachedir ~/.local/share/tarsnap
+  cleanup
+}
+
+new_archive() {
+  decrypt_key
+  tarsnap -c \
+    --keyfile $plaintext_key_file \
+    --cachedir ~/.local/share/tarsnap \
+    -f "$(basename $directory)-$(date +%Y%m%d%H%M%S)" "$directory"
+  cleanup
+}
+
+main() {
+  command=$1 && shift
+  if [[ "$command" == "-h" ]]; then
+    display_help
+  fi
+
+  parse_args $*
+
+  case "$command" in
+    list) list_archives;;
+    new)  new_archive;;
+    *)    display_help;;
+  esac
+}
+
+main $*
