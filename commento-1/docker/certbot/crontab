@@ -1,1 +1,1 @@
-0 0 * * * /bin/certs-renew
+0 0 * * * /usr/bin/certs-renew
