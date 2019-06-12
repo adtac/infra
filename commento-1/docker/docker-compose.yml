@@ -39,7 +39,7 @@ services:
       - postgres_network
 
   io:
-    image: registry.gitlab.com/commento/commento-io:v1.7.0
+    image: registry.gitlab.com/commento/commento-io:latest
     environment:
       COMMENTO_CONFIG_FILE: /etc/commento.env
       COMMENTO_ORIGIN: https://commento.io
