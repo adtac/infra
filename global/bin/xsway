@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# keymaps
-export XKB_DEFAULT_OPTIONS=caps:escape,
-
-exec /usr/bin/sway

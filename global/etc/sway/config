@@ -12,6 +12,8 @@ bindsym $mod+space exec --no-startup-id rofi -show run -font "VT323 14" -normal-
 # kill focused window
 bindsym $mod+Shift+q kill
 
+bindsym $mod+Alt+Shift+l exec swaylock -e -c fff4e6 -u
+
 # move between windows
 bindsym $mod+h focus left
 bindsym $mod+j focus down
