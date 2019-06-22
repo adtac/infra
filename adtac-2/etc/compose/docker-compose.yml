@@ -50,7 +50,7 @@ services:
     volumes:
       - transmission_data:/var/transmission/data
       - transmission_watch:/var/transmission/watch
-      - transmission_dl:/var/transmission/dl
+      - ${HOME}/dl:/var/transmission/dl
     networks:
       - transmission_network
 
@@ -63,4 +63,3 @@ volumes:
   plex_data:
   transmission_data:
   transmission_watch:
-  transmission_dl:
