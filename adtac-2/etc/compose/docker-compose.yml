@@ -12,6 +12,7 @@ services:
     networks:
       - plex_network
       - cgit_network
+      - transmission_network
 
   certbot:
     build: ./certbot
@@ -39,9 +40,27 @@ services:
     networks:
       - cgit_network
 
+  transmission:
+    build: ./transmission
+    ports:
+      - 9091:9091
+      - 51413:51413
+    environment:
+      TRANSMISSION_PASSWORD: ${TRANSMISSION_PASSWORD}
+    volumes:
+      - transmission_data:/var/transmission/data
+      - transmission_watch:/var/transmission/watch
+      - transmission_dl:/var/transmission/dl
+    networks:
+      - transmission_network
+
 networks:
   plex_network:
   cgit_network:
+  transmission_network:
 
 volumes:
   plex_data:
+  transmission_data:
+  transmission_watch:
+  transmission_dl:
