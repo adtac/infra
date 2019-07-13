@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -e
+
+display_help() {
+  cat << help_msg
+usage: exif-rename OPTIONS
+rename files in a directory of photos to their creation date in UTC using the
+EXIF data present in the metadata
+
+optional arguments:
+  -d     directory to list all files in (default to current directory)
+  -n     simulate a dry run
+  -h     show this help message and exit
+help_msg
+
+  printf "%s" "$help_msg"
+  exit
+}
+
+directory=.
+dry_run=
+
+parse_args() {
+  while getopts "d:e:n" opt; do
+    case "$opt" in
+      d) directory="$OPTARG";;
+      n) dry_run=yes;;
+      *) display_help;;
+    esac
+  done
+
+  directory=$(realpath "$directory")
+  if [[ ! -d "$directory" ]]; then
+    printf "error: %s is not a valid directory" "$directory"
+    exit 1
+  fi
+}
+
+tools_check() {
+  for tool in exiftool; do
+    if ! which "$tool" 1>/dev/null; then
+      printf "error: no executable named %s found in PATH=%s" "$tool" "$PATH"
+      exit
+    fi
+  done
+}
+
+exif_rename() {
+  cd "$directory"
+  for f in *; do
+    printf "processing %s... " "$f"
+    creation_timestamp=$(exiftool -T -createdate "$f") || continue
+    date=$(echo $creation_timestamp | cut -d ' ' -f 1 | tr ':' '-')
+    time=$(echo $creation_timestamp | cut -d ' ' -f 2 | tr -d ':')
+    for count in $(seq 0 9); do
+      new_f="${date}-${time}-${count}.${f##*.}"
+      if [[ ! -f "$new_f" ]]; then
+        break
+      fi
+    done
+    printf "renaming to %s\n" "$new_f"
+    cmd="mv -n ""$f"" "$new_f""
+    if [[ "$dry_run" == "yes" ]]; then
+      cmd="echo $cmd"
+    fi
+    $cmd
+  done
+}
+
+main() {
+  parse_args $*
+  tools_check
+
+  exif_rename
+}
+
+main $*
