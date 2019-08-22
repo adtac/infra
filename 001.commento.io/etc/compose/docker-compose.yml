@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ${HOME}/www:/www
+    networks:
+      - io_network
+
+  certbot:
+    build: ./certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+
+  io:
+    image: registry.gitlab.com/commento/commento-io:latest
+    environment:
+      COMMENTO_CONFIG_FILE: /etc/commento.env
+    volumes:
+      - /etc/commento.env:/etc/commento.env
+    networks:
+      - io_network
+
+networks:
+  io_network:
