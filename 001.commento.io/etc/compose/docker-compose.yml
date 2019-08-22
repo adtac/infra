@@ -20,7 +20,7 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
 
-  io:
+  commento:
     image: registry.gitlab.com/commento/commento-io:latest
     environment:
       COMMENTO_CONFIG_FILE: /etc/commento.env
