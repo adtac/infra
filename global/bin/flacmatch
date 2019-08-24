@@ -148,19 +148,33 @@ def set_album(amid):
         flac.save()
 
 def main():
-    results, err = search(sys.argv[1])
-    if err is not None: return err
+    if len(sys.argv) < 2:
+        print("no argument given")
+        return
 
-    print("selecting first result:")
-    amid = results["results"]["albums"]["data"][0]["id"]
-    album = results["results"]["albums"]["data"][0]["attributes"]
-    name = album["name"]
-    year = album["releaseDate"]
-    if "-" in year:
-        year = year.split("-")[0]
-    albumArtists = list(artistSplit(album["artistName"]))
-    print("  {} ({})".format(name, year, albumArtists))
-    print("  {}".format(albumArtists))
+    amid = ""
+    arg = " ".join(sys.argv[1:])
+    argAmid = False
+    try:
+        amid = str(int(arg))
+        argAmid = True
+    except Exception as e:
+        argAmid = False
+
+    if not argAmid:
+        results, err = search(arg)
+        if err is not None: return err
+
+        print("selecting first result:")
+        amid = results["results"]["albums"]["data"][0]["id"]
+        album = results["results"]["albums"]["data"][0]["attributes"]
+        name = album["name"]
+        year = album["releaseDate"]
+        if "-" in year:
+            year = year.split("-")[0]
+        albumArtists = list(artistSplit(album["artistName"]))
+        print("  {} ({})".format(name, year, albumArtists))
+        print("  {}".format(albumArtists))
 
     return set_album(amid)
 
