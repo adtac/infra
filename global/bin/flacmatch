@@ -142,7 +142,7 @@ def set_album(amid, interactive=False):
             idx = int(input("idx? "))
             if idx == 0:
                 continue
-                f, flac = fs[idx], FLAC(fs[idx])
+            f, flac = fs[idx], FLAC(fs[idx])
 
         print("    setting cover art...")
         flac.clear_pictures()
