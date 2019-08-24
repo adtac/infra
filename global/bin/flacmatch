@@ -74,10 +74,10 @@ def match_file(trackNumber, name, length):
 
             flac = FLAC(f)
             diff = abs(flac.info.length - length / 1000)
-            if diff < 0.03:
-                total_score += 5
+            if diff < 2:
+                total_score += 1
             else:
-                total_score += 0.15 / diff
+                total_score += 2 / diff
 
             matches.append((total_score, f, flac))
 
