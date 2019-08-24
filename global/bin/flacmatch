@@ -132,13 +132,14 @@ def set_album(amid, interactive=False):
             else:
                 print("    match: {} (score = {})".format(f, score))
         else:
-            idx = 1
             fs = []
             for _, _, files in os.walk("."):
+                idx = 1
                 fs = sorted(files)
                 for f in sorted(files):
-                    print("{}. {}".format(idx, f))
+                    print("    {}. {}".format(idx, f))
                     idx += 1
+            idx = int(input("idx? "))
             if idx == 0:
                 continue
                 f, flac = fs[idx], FLAC(fs[idx])
