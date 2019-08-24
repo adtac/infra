@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import difflib
+import requests
+import urllib
+from mutagen.flac import FLAC, Picture
+
+headers = {
+    "Authorization": "Bearer {}".format(os.getenv("TOKEN"))
+}
+
+def similarity(x, y):
+    return difflib.SequenceMatcher(a=x.lower(), b=y.lower()).ratio()
+
+def artistSplit(s):
+    comps = s.split("&")
+    if len(comps) > 1:
+        for artist in artistSplit("&".join(comps[:-1])):
+            yield artist
+        yield comps[-1].strip()
+        return
+
+    for artist in s.split(","):
+        yield artist.strip()
+
+def search(album):
+    global headers
+    url = "https://api.music.apple.com/v1/catalog/us/search?{}".format(
+        urllib.parse.urlencode({"term": album, "limit": 10}))
+    print("searching for '{}'...".format(album))
+    r = requests.get(url, headers=headers)
+    if r.status_code == 200:
+        return r.json(), None
+    return None, {"status": r.status_code, "body": r.text}
+
+def get_album(amid):
+    global headers
+    url = "https://api.music.apple.com/v1/catalog/us/albums?ids={}".format(amid)
+    print("getting AMID {}...".format(amid))
+    r = requests.get(url, headers=headers)
+    if r.status_code == 200:
+        return r.json(), None
+    return None, {"status": r.status_code, "body": r.text}
+
+def match_file(trackNumber, name, length):
+    matches = []
+    for _, _, files in os.walk("."):
+        for f in sorted(files):
+            if not f.endswith(".flac"):
+                continue
+            fname = f[:f.find(".flac")]
+
+            fnametn = ""
+            while fname[0].isdigit():
+                fnametn += fname[0]
+                fname = fname[1:]
+            if fnametn != "":
+                fnametn = int(fnametn)
+
+            fname = fname.strip()
+            if fname[0] == "-":
+                fname = fname[1:].strip()
+
+            total_score = 0
+
+            total_score += similarity(fname, name)
+            if name.lower() in fname.lower():
+                total_score += 0.3
+
+            if fnametn != "" and fnametn != trackNumber:
+                total_score += 1
+
+            flac = FLAC(f)
+            diff = abs(flac.info.length - length / 1000)
+            if diff < 0.03:
+                total_score += 5
+            else:
+                total_score += 0.15 / diff
+
+            matches.append((total_score, f, flac))
+
+    return sorted(matches)[-1]
+
+def set_album(amid):
+    result, err = get_album(amid)
+    if err is not None: return err
+
+    album = result["data"][0]
+    attrs = album["attributes"]
+
+    print("downloading artwork 500x500...")
+    picture = Picture()
+    with open("cover.jpg", "wb") as f:
+        r = requests.get(attrs["artwork"]["url"].replace("{w}", "500").replace("{h}", "500"))
+        data = r.content
+        f.write(data)
+        picture.data = data
+        picture.mime = u"image/jpeg"
+        picture.width = 500
+        picture.height = 500
+
+    albumName = attrs["name"]
+    
+    albumArtists = list(artistSplit(attrs["artistName"]))
+
+    totalDiscs = 1
+    if "discCount" in attrs:
+        totalDiscs = attrs["discCount"]
+    totalTracks = attrs["trackCount"]
+    tracks = []
+    for track in album["relationships"]["tracks"]["data"]:
+        track = track["attributes"]
+        name = track["name"]
+        trackNumber = track["trackNumber"]
+        artists = list(artistSplit(track["artistName"]))
+        year = track["releaseDate"]
+        if "-" in year:
+            year = year.split("-")[0]
+        genre = track["genreNames"]
+        discNumber = track["discNumber"]
+        print("  ({}.{}/{}.{}) {}".format(discNumber, trackNumber, totalDiscs, totalTracks, name))
+
+        best = match_file(trackNumber, name, track["durationInMillis"])
+        score, f, flac = best
+        if score < 1.35:
+            print("    no match found (best = {})".format(best))
+        else:
+            print("    match: {} (score = {})".format(f, score))
+
+        print("    setting cover art...")
+        flac.clear_pictures()
+        flac.add_picture(picture)
+
+        print("    resetting tags...")
+        flac.delete()
+        flac["TITLE"] = name
+        flac["ARTIST"] = artists
+        flac["ALBUM"] = albumName
+        flac["TRACKNUMBER"] = str(trackNumber)
+        flac["TOTALTRACKS"] = str(totalTracks)
+        flac["DISCNUMBER"] = str(discNumber)
+        flac["ALBUMARTIST"] = albumArtists
+        flac["DATE"] = year
+        flac["GENRE"] = genre
+
+        flac.save()
+
+def main():
+    results, err = search(sys.argv[1])
+    if err is not None: return err
+
+    print("selecting first result:")
+    amid = results["results"]["albums"]["data"][0]["id"]
+    album = results["results"]["albums"]["data"][0]["attributes"]
+    name = album["name"]
+    year = album["releaseDate"]
+    if "-" in year:
+        year = year.split("-")[0]
+    albumArtists = list(artistSplit(album["artistName"]))
+    print("  {} ({})".format(name, year, albumArtists))
+    print("  {}".format(albumArtists))
+
+    return set_album(amid)
+
+if __name__ == "__main__":
+    err = main()
+    if err is not None: print(err)
