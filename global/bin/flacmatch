@@ -83,7 +83,7 @@ def match_file(trackNumber, name, length):
 
     return sorted(matches)[-1]
 
-def set_album(amid):
+def set_album(amid, interactive=False):
     result, err = get_album(amid)
     if err is not None: return err
 
@@ -122,12 +122,26 @@ def set_album(amid):
         discNumber = track["discNumber"]
         print("  ({}.{}/{}.{}) {}".format(discNumber, trackNumber, totalDiscs, totalTracks, name))
 
-        best = match_file(trackNumber, name, track["durationInMillis"])
-        score, f, flac = best
-        if score < 1.35:
-            print("    no match found (best = {})".format(best))
+        f, flac = None, None
+        if not interactive:
+            best = match_file(trackNumber, name, track["durationInMillis"])
+            score, f, flac = best
+            if score < 1.35:
+                print("    no match found (best = {})".format(best))
+                continue
+            else:
+                print("    match: {} (score = {})".format(f, score))
         else:
-            print("    match: {} (score = {})".format(f, score))
+            idx = 1
+            fs = []
+            for _, _, files in os.walk("."):
+                fs = sorted(files)
+                for f in sorted(files):
+                    print("{}. {}".format(idx, f))
+                    idx += 1
+            if idx == 0:
+                continue
+                f, flac = fs[idx], FLAC(fs[idx])
 
         print("    setting cover art...")
         flac.clear_pictures()
@@ -151,6 +165,11 @@ def main():
     if len(sys.argv) < 2:
         print("no argument given")
         return
+
+    interactive = False
+    if sys.argv[1] == "-i":
+        interactive = True
+        sys.argv.pop(1)
 
     amid = ""
     arg = " ".join(sys.argv[1:])
@@ -176,7 +195,7 @@ def main():
         print("  {} ({})".format(name, year, albumArtists))
         print("  {}".format(albumArtists))
 
-    return set_album(amid)
+    return set_album(amid, interactive=interactive)
 
 if __name__ == "__main__":
     err = main()
