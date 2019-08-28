@@ -2,10 +2,7 @@
 
 fpath=(~/.zsh/completion $fpath) 
 autoload -Uz compinit && compinit -C -d "${ZDOTDIR:-${HOME}}/${zcompdump_file:-.zcompdump}"
-
-if [[ "$HOST" == arch-* ]]; then
-  compdef ${zpacman_frontend}='pacman'
-fi
+compdef ${zpacman_frontend}='pacman'
  
 zstyle ':completion:*' menu select=2
 

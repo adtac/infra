@@ -41,3 +41,10 @@ function pv() {
     source "$HOME/venv/$1/bin/activate"
   fi
 }
+
+function pushover_notify() {
+  curl -s "https://api.pushover.net/1/messages.json" \
+    --form-string "token=${PUSHOVER_TOKEN}" \
+    --form-string "user=${PUSHOVER_USER}" \
+    --form-string "message=$1"
+}

@@ -23,3 +23,5 @@ bindkey "^H" backward-delete-char                  # DELETE deletes the characte
 bindkey " " magic-space                            # pressing SPACE after !command fills it
 bindkey "^[[Z" reverse-menu-complete               # SHIFT+TAB cycles in the opposite direction
 bindkey "^R" history-incremental-search-backward   # reverse search
+bindkey "^?" backward-delete-char                  # backspace in insert mode after normal mode
+bindkey "jk" vi-cmd-mode                           # go to vi mode with jk
