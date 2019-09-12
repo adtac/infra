@@ -11,6 +11,8 @@ headers = {
     "Authorization": "Bearer {}".format(os.getenv("TOKEN"))
 }
 
+country = "us"
+
 def similarity(x, y):
     return difflib.SequenceMatcher(a=x.lower(), b=y.lower()).ratio()
 
@@ -27,8 +29,8 @@ def artistSplit(s):
 
 def search(album):
     global headers
-    url = "https://api.music.apple.com/v1/catalog/us/search?{}".format(
-        urllib.parse.urlencode({"term": album, "limit": 10}))
+    url = "https://api.music.apple.com/v1/catalog/{}/search?{}".format(
+        country, urllib.parse.urlencode({"term": album, "limit": 10}))
     print("searching for '{}'...".format(album))
     r = requests.get(url, headers=headers)
     if r.status_code == 200:
@@ -37,7 +39,7 @@ def search(album):
 
 def get_album(amid):
     global headers
-    url = "https://api.music.apple.com/v1/catalog/us/albums?ids={}".format(amid)
+    url = "https://api.music.apple.com/v1/catalog/{}/albums?ids={}".format(country, amid)
     print("getting AMID {}...".format(amid))
     r = requests.get(url, headers=headers)
     if r.status_code == 200:
@@ -162,6 +164,8 @@ def set_album(amid, interactive=False):
         flac.save()
 
 def main():
+    global country
+
     if len(sys.argv) < 2:
         print("no argument given")
         return
@@ -169,6 +173,11 @@ def main():
     interactive = False
     if sys.argv[1] == "-i":
         interactive = True
+        sys.argv.pop(1)
+
+    if sys.argv[1] == "-c":
+        sys.argv.pop(1)
+        country = sys.argv[1]
         sys.argv.pop(1)
 
     amid = ""
