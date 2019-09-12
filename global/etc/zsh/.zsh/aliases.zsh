@@ -1,5 +1,4 @@
-alias vim="nvim"
-alias vi="nvim"
+alias vi="vim"
 
 alias mutt="neomutt -F ~/.config/mutt/config"
 
@@ -8,7 +7,7 @@ alias f="newsboat"
 alias m="mutt"
 alias n="ncmpcpp"
 alias r="ranger"
-alias v="nvim"
+alias v="vim"
 alias w="MOSH_ESCAPE_KEY='~' mosh 2.adtac.in -- tmux attach -t weechat"
 alias z="zathura"
 
