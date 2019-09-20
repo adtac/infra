@@ -8,9 +8,10 @@ fi
 
 if [[ "$1" == "volume" ]]; then
   idx=$(pacmd list-sinks \
-    | awk '/.*priority:|index:/{print $NF}' \
-    | paste -d " " - - \
-    | sort -k2 -nr \
+    | awk '/.*priority:|index:|state:/{print $NF}' \
+    | paste -d " " - - - \
+    | grep -P "(RUNNING|IDLE)" \
+    | sort -k3rn -k1n \
     | head -n 1 \
     | awk '{print $1}')
   if [[ "$2" == "get" ]]; then
