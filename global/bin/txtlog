@@ -1,0 +1,201 @@
+#!/usr/bin/env bash
+
+today() {
+  date +%Y-%m-%d
+}
+
+common_prefix() {
+  read a; read b
+  while [[ "$b" != "" ]]; do
+    a=$(printf "%s\n%s\n" "$a" "$b" | sed -e 'N;s/^\(.*\).*\n\1.*$/\1/')
+    read b
+  done
+
+  printf "$a"
+}
+
+root_help() {
+  echo -e "
+Usage: txtlog COMMAND
+
+A tool to store notes nad journal entries in text files
+
+Commands:
+  ls|list   List log entries
+  new       Create a new entry for today
+  edit      Edit a previously written entry
+  help      Show help messages
+
+Run 'txtlog help COMMAND' for more information on a command.
+"
+}
+
+list_help() {
+  echo -e "
+Usage: txtlog ls|list [FILTER]
+
+List log entries, optionally with a filter. If no argument is provided, all
+entries will be listed.
+
+Examples:
+
+    $ txtlog list
+    \e[1;38;5;241m2017-\e[1;38;5;75m12-22\e[39;0m\e[1;38;5;241m-01\e[39;m   A New Hope
+    \e[1;38;5;241m2018-\e[1;38;5;75m06-22\e[39;0m\e[1;38;5;241m-01\e[39;m   The Empire Strikes Back
+    \e[1;38;5;241m2018-\e[1;38;5;75m07-23\e[39;0m\e[1;38;5;241m-01\e[39;m   Return of the Jedi
+
+    $ txtlog ls 2018-07
+    \e[1;38;5;241m2018-\e[1;38;5;75m07-23\e[39;0m\e[1;38;5;241m-01\e[39;m   Return of the Jedi
+"
+}
+
+list() {
+  for f in $1*; do
+    year=$(echo "$f" | cut -d '-' -f 1)
+    month=$(echo "$f" | cut -d '-' -f 2)
+    day=$(echo "$f" | cut -d '-' -f 3)
+    entry=$(echo "$f" | cut -d '-' -f 4 | cut -d '.' -f 1)
+    short=$(head -n 1 "$f")
+    printf "%s\e[1;38;5;241m%d-\e[1;38;5;75m%.2d-%.2d\e[39;0m\e[1;38;5;241m-%.2d\e[39;m   %s\n" "$2" "$year" "$month" "$day" "$entry" "$short"
+  done
+}
+
+new_help() {
+  echo -e "
+Usage: txtlog new [TITLE]
+
+Create a new entry. If a title is provided, txtlog will prefill the first line
+of the created file, which is used as title. Your \$EDITOR will be used.
+"
+}
+
+new() {
+  glob=$(date +%Y-%m-%d-)
+  new_index=1
+  filename=$(printf "%s-%.2d.txt" "$(today)" "$new_index")
+  while true; do
+    filename=$(printf "%s-%.2d.txt" "$(today)" "$new_index")
+    if [[ -f "$filename" ]]; then
+      new_index=$(($new_index+1))
+    else
+      break
+    fi
+  done
+
+  if [[ "$1" != "" ]]; then
+    echo "${@:1}" > "$filename"
+  fi
+
+  $EDITOR "$filename"
+}
+
+edit_help() {
+  echo -e "
+Usage: txtlog edit [FILTER]
+
+Edit a previously written entry. You can specify a filter to prompt you with a
+list of entries to choose from. Alternatively, you may use 'all' as the
+argument to edit to start editing the latest entry. If no arguments are
+provided, you can choose from today's entries, if there are multiple.
+
+Examples:
+
+    $ txtlog edit 2018-07
+            \e[1;38;5;241m2018-\e[1;38;5;75m07-22\e[39;0m\e[1;38;5;241m-01\e[39;m   The Empire Strikes Back
+            \e[1;38;5;241m2018-\e[1;38;5;75m07-23\e[39;0m\e[1;38;5;241m-01\e[39;m   Return of the Jedi
+            \e[1;38;5;241m2018-\e[1;38;5;75m07-23\e[39;0m\e[1;38;5;241m-02\e[39;m   The Force Awakens
+    Filter: \e[37m2018-07-2█\e[39;m
+"
+}
+
+edit() {
+  if [[ ${1: -4} == ".txt" ]]; then
+    if [[ ! -f "$1" ]]; then
+      printf "no file named %s\n" "$1"
+      exit 1
+    fi
+
+    exec $EDITOR "$1"
+  fi
+
+  if [[ "$1" == "last" ]]; then
+    file="$(ls -r 2>/dev/null | head -n 1)"
+    if [[ "$file" == "" ]]; then
+      printf "zero entries to choose from\n"
+      exit 1
+    fi
+
+    exec $EDITOR "$file"
+  fi
+
+  hyphen_count=$(echo "$1" | grep -o "-" | wc -l)
+
+  filter="$1"
+  if [[ "$filter" == "" ]]; then
+    filter=$(today)
+  fi
+
+  filter=$(ls ${filter}* 2>/dev/null | common_prefix)
+
+  while true; do
+    num_files=$(ls ${filter}* 2>/dev/null | wc -l)
+    case "$num_files" in
+      0)
+        printf "\e[31mzero matching entries\e[39m\n"
+        exit 1
+        ;;
+      1)
+        exec $EDITOR ${filter}*
+        ;;
+      *)
+        list "$filter" "        "
+        printf "Filter: \e[37m%s\e[39;0m" "$filter"
+        read entry
+
+        filter_new="${filter}${entry}"
+        num_files_new=$(ls ${filter_new}* 2>/dev/null | wc -l)
+        case "$num_files_new" in
+          0)
+            printf "\e[31mzero matching entries\e[39;0m\n\n"
+            ;;
+          1)
+            exec $EDITOR ${filter_new}*
+            ;;
+          *)
+            filter=$(ls ${filter_new}* 2>/dev/null | common_prefix)
+            ;;
+        esac
+    esac
+  done
+}
+
+case "$1" in
+  ls|list)
+    list "$2"
+    ;;
+
+  new)
+    new "$2"
+    ;;
+
+  edit)
+    edit "$2"
+    ;;
+
+  *)
+    case "$2" in
+      list)
+        list_help
+        ;;
+      new)
+        new_help
+        ;;
+      edit)
+        edit_help
+        ;;
+      *)
+        root_help
+        ;;
+    esac
+    ;;
+esac
