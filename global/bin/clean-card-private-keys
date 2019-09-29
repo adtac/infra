@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+set -e
+
+display_help() {
+  cat << help_msg
+usage: clean-card-private-keys OPTIONS
+gpg helper script to scrub card-based private keys stubs from your keychain
+
+optional arguments:
+  -u       user to run this as
+
+help_msg
+
+  printf "%s" "$help_msg"
+  exit
+}
+
+run_as=
+
+parse_args() {
+  while getopts "u:" opt; do
+    case "$opt" in
+      u) run_as=$OPTARG;;
+      *) display_help;;
+    esac
+  done
+
+  if [[ ! -z "$run_as" ]]; then
+    if ! id -u "$run_as"; then
+      exit 1
+    fi
+  fi
+}
+
+clean_card_private_keys() {
+  if [[ "$run_as" == "" ]]; then
+    keygrips=$(
+      gpg-connect-agent 'keyinfo --list' /bye 2>/dev/null \
+        | grep -v OK \
+        | awk '{if ($4 == "T") { print $3 ".key" }}')
+    for f in $keygrips; do
+      echo rm -v ~/.gnupg/private-keys-v1.d/$f
+    done
+  else
+    echo ${BASH_SOURCE[0]}
+    su "$run_as" -c "${BASH_SOURCE[0]}"
+  fi
+}
+
+main() {
+  parse_args $*
+  clean_card_private_keys "$run_as"
+}
+
+main $*
