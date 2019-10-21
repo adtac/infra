@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+export USERNAME=adtac
+
+setup_basics() {
+  apt update && apt install -y neovim curl zsh git stow htop fail2ban
+  chsh -s $(which zsh)
+  touch ~/.zshrc
+}
+
+setup_docker() {
+  apt install -y apt-transport-https ca-certificates curl software-properties-common
+  curl -s https://download.docker.com/linux/debian/gpg | apt-key add -
+  echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee -a /etc/apt/sources.list.d/docker.list
+  apt update
+  apt install -y docker-ce
+  systemctl enable --now docker
+}
+
+create_user() {
+  adduser $USERNAME
+  usermod -aG sudo $USERNAME
+  usermod -aG docker $USERNAME
+  su - $USERNAME -c "mkdir ~/.ssh && curl -s https://github.com/$USERNAME.keys > ~/.ssh/authorized_keys"
+  su - $USERNAME -c "chsh -s $(which zsh)"
+  cp $0 /home/$USERNAME/init
+  chown $USERNAME:$USERNAME /home/$USERNAME/init
+}
+
+setup_firewall() {
+  iptables -F
+
+  iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+  iptables -A INPUT -m state --ctstate ESTABLISHED -j ACCEPT
+  iptables -A INPUT -i lo -j ACCEPT
+  iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+  iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+  iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+  iptables -A INPUT -j DROP
+
+  iptables -A OUTPUT -o lo -j ACCEPT
+
+  echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+  echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+  apt install -y iptables-persistent
+}
+
+clean_motd() {
+  rm /etc/update-motd.d/*
+  echo -n "" > /etc/motd
+}
+
+root_main() {
+  setup_basics
+  setup_docker
+  setup_firewall
+  create_user
+  clean_motd
+  printf "root tasks done; logout and login as $USERNAME and run as user\n"
+}
+
+setup_home_dirs() {(
+  cd ~
+  mkdir tmp src bin pkg sys www
+)}
+
+setup_dotfiles() {(
+  mkdir -p ~/src/github.com/$USERNAME/
+  cd ~/src/github.com/$USERNAME/
+  git clone https://github.com/$USERNAME/dotfiles.git
+  cd dotfiles/
+
+  stow zsh -t ~
+
+  stow vim -t ~
+
+  mkdir -p ~/.config/nvim
+  stow nvim -t ~/.config/nvim
+
+  curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  vim +PlugInstall +qa
+  nvim +PlugInstall +qa
+
+  sed -i '/pacman/d' ~/.zsh/completion.zsh
+  echo 'export PS1=" %K{1}%B%F{0} $HOST %f%b%k$PS1"' >>~/.zsh/prompt.zsh
+  git config --global user.email "local@$HOSTNAME"
+  git config --global user.name "$HOSTNAME"
+  git add -A
+  git commit -m "zsh: customize for Debian server"
+)}
+
+user_main() {
+  setup_home_dirs
+  setup_dotfiles
+}
+
+cleanup() {
+  sudo rm -vrf /root/init /home/$USERNAME/init
+}
+
+if [ "$1" == "root" ]; then
+  root_main
+elif [ "$1" == "user" ]; then
+  user_main
+  cleanup
+else
+  echo "specify root/user"
+fi
