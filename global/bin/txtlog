@@ -56,7 +56,7 @@ list() {
     day=$(echo "$f" | cut -d '-' -f 3)
     entry=$(echo "$f" | cut -d '-' -f 4 | cut -d '.' -f 1)
     short=$(head -n 1 "$f")
-    printf "%s\e[1;38;5;241m%d-\e[1;38;5;75m%.2d-%.2d\e[39;0m\e[1;38;5;241m-%.2d\e[39;m   %s\n" "$2" "$year" "$month" "$day" "$entry" "$short"
+    printf "%04d-%02d-%02d\t%02d\t%s\n" "${year#0}" "${month#0}" "${day#0}" "$entry" "$short"
   done
 }
 
