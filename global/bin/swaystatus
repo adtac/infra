@@ -29,5 +29,5 @@ do
   temp=$(cntrl temperature get)
   mem=$(cntrl memory get)
 
-  echo "$music    ⛀ $mem    ♨ $temp    ∼ $volume    ⚙ $brightness    $line "
+  echo "$music    ⛀ $mem    ⋇ $temp    ∿ $volume    ⚙ $brightness    $line "
 done
