@@ -3,6 +3,8 @@ case "$HOST" in
     host_bg=15;  host_fg=119;;
   *.google.com)
     host_bg=15;  host_fg=119;;
+  3.adtac.in)
+    host_bg=15;  host_fg=119;;
   *)
     khost_bg=119; host_fg=112;;
 esac
