@@ -98,7 +98,7 @@ mode "resize" {
 bindsym $mod+shift+r mode "resize"
 
 bar {
-  font VT323 13
+  font VT323 16px
   strip_workspace_numbers yes
   status_command ~/bin/swaystatus
 

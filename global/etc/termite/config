@@ -1,5 +1,5 @@
 [options]
-  font = VT323 14
+  font = VT323 16px
   allow_bold = false
   allow_underline = false
   client_side_decoration = false
