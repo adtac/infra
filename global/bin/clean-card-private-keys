@@ -40,8 +40,9 @@ clean_card_private_keys() {
         | grep -v OK \
         | awk '{if ($4 == "T") { print $3 ".key" }}')
     for f in $keygrips; do
-      echo rm -v ~/.gnupg/private-keys-v1.d/$f
+      rm -v ~/.gnupg/private-keys-v1.d/$f
     done
+    gpg --card-status 2>/dev/null 1>/dev/null
   else
     echo ${BASH_SOURCE[0]}
     su "$run_as" -c "${BASH_SOURCE[0]}"
