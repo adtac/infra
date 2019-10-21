@@ -23,6 +23,8 @@ services:
   commento:
     image: registry.gitlab.com/commento/commento-io:latest
     environment:
+      COMMENTO_ORIGIN: https://demo.commento.io
+      COMMENTO_CDN_PREFIX: https://cdndemo.commento.io
       COMMENTO_CONFIG_FILE: /etc/commento.env
     volumes:
       - /etc/commento.env:/etc/commento.env
