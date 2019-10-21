@@ -1,11 +1,11 @@
 #!/bin/sh
 
 while true; do
-  sleep 86400
   certbot certonly \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --preferred-challenges dns \
     -d '*.commento.io' -d 'commento.io' \
     --dns-route53 --dns-route53-propagation-seconds 30 \
     -n --agree-tos --email adtac@commento.io
+  sleep 86400
 done
