@@ -69,7 +69,7 @@ augroup ledger
   autocmd BufNewFile,BufRead *.ledger set filetype=ledger
   autocmd FileType ledger set colorcolumn=50
 
-  imap <C-Space> <Esc>:exe "normal a" . repeat(" ", 71 - strwidth(getline('.')))<cr>A
+  imap <C-F> <Esc>:exe "normal a" . repeat(" ", 71 - strwidth(getline(".")))<cr>A
 
   autocmd FileType ledger syntax match
     \ ledgerDebit "[0-9\.]\+ [A-Z]\+$" |
@@ -108,8 +108,8 @@ augroup END
 set statusline=\ %<#%02n\ %f\ %=%{&filetype!=#''?&filetype:'none'}%m\ %l:%c/%L\ 
 set laststatus=2
 
-" jk is the new escape
 imap jk <Esc>
+nnoremap <space> i
 
 " treat long lines as break lines
 nnoremap j gj
@@ -121,9 +121,6 @@ nnoremap ,. <C-^>
 " TeX compile: use a clean build each time because TeX is weird like that
 nnoremap ,d :!rm *.aux; pdflatex % && bibtex %:r && pdflatex % && pdflatex %<cr>
 nmap ,c ,d,d
-
-" map <Space> and <C-Space> to forward and backward search
-nnoremap <space> i
 
 " clear search highlight
 nnoremap <silent> ,, :noh<cr>
