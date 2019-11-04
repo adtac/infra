@@ -93,6 +93,10 @@ augroup ledger
     \ highlight ledgerDate cterm=NONE ctermfg=128
 
   autocmd FileType ledger
+    \ syntax match ledgerIncome "  Equity:[A-Za-z0-9:]*" |
+    \ highlight ledgerIncome cterm=NONE ctermfg=189
+
+  autocmd FileType ledger
     \ syntax match ledgerIncome "  Income:[A-Za-z0-9:]*" |
     \ highlight ledgerIncome cterm=NONE ctermfg=199
 
