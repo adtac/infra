@@ -70,8 +70,12 @@ augroup ledger
   autocmd FileType ledger set colorcolumn=50
 
   autocmd FileType ledger syntax match
-    \ ledgerAmount "[-]*[0-9\.]\+ [A-Z]\+$" |
-    \ highlight ledgerAmount cterm=NONE ctermfg=199 ctermbg=193
+    \ ledgerDebit "[0-9\.]\+ [A-Z]\+$" |
+    \ highlight ledgerDebit cterm=NONE ctermfg=199 ctermbg=193
+
+  autocmd FileType ledger syntax match
+    \ ledgerCredit "-[0-9\.]\+ [A-Z]\+$" |
+    \ highlight ledgerCredit cterm=NONE ctermfg=119 ctermbg=113
 
   autocmd FileType ledger syntax match
     \ ledgerComment "^#.*$" |
