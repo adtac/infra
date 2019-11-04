@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 .PHONY: workstation
-workstation: sway i3status dunst termite mpd ncmpcpp mpdscribble zathura zsh vim git
+workstation: sway i3status dunst termite mpd ncmpcpp mpdscribble zathura zsh vim git ledger
 
 .PHONY: server
 server: zsh vim git
@@ -53,3 +53,7 @@ dunst:
 .PHONY: mpd
 mpd:
 	[ -d ${HOME}/.config/mpd ] || ln -s $(shell pwd)/mpd ${HOME}/.config/mpd
+
+.PHONY: ledger
+ledger:
+	[ -d ${HOME}/.ledgerrc ] || ln -s $(shell pwd)/ledger/.ledgerrc ${HOME}/.ledgerrc
