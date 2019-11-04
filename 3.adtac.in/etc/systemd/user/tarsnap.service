@@ -5,7 +5,7 @@ After=network.target network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/home/adtac/bin/xtarsnap new -k tarsnap.com/key -d %h/docs
+ExecStart=/home/adtac/bin/xtarsnap new -p -k %h/.config/tarsnap/wkey -d %h/docs
 
 [Install]
 WantedBy=default.target

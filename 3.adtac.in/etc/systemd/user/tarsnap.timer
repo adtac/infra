@@ -1,5 +1,5 @@
 [Unit]
-Description=tarsnap backup every four hours
+Description=hourly tarsnap backup
 Wants=network-online.target
 After=network.target network-online.target
 

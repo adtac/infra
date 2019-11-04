@@ -12,8 +12,9 @@ available commands:
   new      make a new archive
 
 required arguments:
-  -k       key file path within the pass store
+  -k       key file path
   -d       directory to backup
+  -p       source plaintext key without pass(1) decryption
 
 optional arguments:
   -h       show this help message and exit
@@ -25,12 +26,14 @@ help_msg
 
 key_file=
 directory=
+no_pass=
 
 parse_args() {
-  while getopts "k:d:" opt; do
+  while getopts "k:d:p" opt; do
     case "$opt" in
       k) key_file=$OPTARG;;
       d) directory=$OPTARG;;
+      p) no_pass=true;;
       *) display_help;;
     esac
   done
@@ -54,15 +57,21 @@ parse_args() {
 plaintext_key_file=
 
 decrypt_key() {
-  plaintext_key_file=$(mktemp -u)
-  touch "$plaintext_key_file"
-  chmod 0600 "$plaintext_key_file"
-  pass "$key_file" >"$plaintext_key_file"
-  chmod 0400 "$plaintext_key_file"
+  if [[ "$no_pass" == "true" ]]; then
+    plaintext_key_file=$key_file
+  else
+    plaintext_key_file=$(mktemp -u)
+    touch "$plaintext_key_file"
+    chmod 0600 "$plaintext_key_file"
+    pass "$key_file" >"$plaintext_key_file"
+    chmod 0400 "$plaintext_key_file"
+  fi
 }
 
 cleanup() {
-  rm -f $plaintext_key_file
+  if [[ "$no_pass" != "true" ]]; then
+    rm -f $plaintext_key_file
+  fi
 }
 
 list_archives() {
