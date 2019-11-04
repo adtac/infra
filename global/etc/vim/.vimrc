@@ -69,6 +69,8 @@ augroup ledger
   autocmd BufNewFile,BufRead *.ledger set filetype=ledger
   autocmd FileType ledger set colorcolumn=50
 
+  imap <C-Space> <Esc>:exe "normal a" . repeat(" ", 71 - strwidth(getline('.')))<cr>A
+
   autocmd FileType ledger syntax match
     \ ledgerDebit "[0-9\.]\+ [A-Z]\+$" |
     \ highlight ledgerDebit cterm=NONE ctermfg=199 ctermbg=193
