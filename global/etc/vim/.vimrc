@@ -73,11 +73,11 @@ augroup ledger
 
   autocmd FileType ledger syntax match
     \ ledgerDebit "[0-9\.]\+ [A-Z]\+$" |
-    \ highlight ledgerDebit cterm=NONE ctermfg=199 ctermbg=193
+    \ highlight ledgerDebit cterm=NONE ctermfg=199
 
   autocmd FileType ledger syntax match
     \ ledgerCredit "-[0-9\.]\+ [A-Z]\+$" |
-    \ highlight ledgerCredit cterm=NONE ctermfg=119 ctermbg=113
+    \ highlight ledgerCredit cterm=NONE ctermfg=119
 
   autocmd FileType ledger syntax match
     \ ledgerComment "^#.*$" |
