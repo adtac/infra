@@ -72,6 +72,11 @@ augroup ledger
   imap <C-F> <Esc>:exe "normal a" . repeat(" ", 71 - strwidth(getline(".")))<cr>A
 
   autocmd FileType ledger
+    \ syntax match ledgerStrict "^commodity .*" |
+    \ syntax match ledgerStrict "^account .*" |
+    \ highlight ledgerStrict cterm=NONE ctermfg=107
+
+  autocmd FileType ledger
     \ syntax match ledgerDebit "[0-9\.]\+ [A-Z]\+$" |
     \ highlight ledgerDebit cterm=NONE ctermfg=199
 
