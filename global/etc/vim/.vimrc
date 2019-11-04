@@ -71,36 +71,36 @@ augroup ledger
 
   imap <C-F> <Esc>:exe "normal a" . repeat(" ", 71 - strwidth(getline(".")))<cr>A
 
-  autocmd FileType ledger syntax match
-    \ ledgerDebit "[0-9\.]\+ [A-Z]\+$" |
+  autocmd FileType ledger
+    \ syntax match ledgerDebit "[0-9\.]\+ [A-Z]\+$" |
     \ highlight ledgerDebit cterm=NONE ctermfg=199
 
-  autocmd FileType ledger syntax match
-    \ ledgerCredit "-[0-9\.]\+ [A-Z]\+$" |
+  autocmd FileType ledger
+    \ syntax match ledgerCredit "-[0-9\.]\+ [A-Z]\+$" |
     \ highlight ledgerCredit cterm=NONE ctermfg=119
 
-  autocmd FileType ledger syntax match
-    \ ledgerComment "^#.*$" |
+  autocmd FileType ledger
+    \ syntax match ledgerComment "^#.*$" |
     \ highlight link ledgerComment Comment
 
-  autocmd FileType ledger syntax match
-    \ ledgerDate "^[0-9]\{2}-[A-Za-z]\{3}-[0-9]\{4}" |
+  autocmd FileType ledger
+    \ syntax match ledgerDate "^[0-9]\{2}-[A-Za-z]\{3}-[0-9]\{4}" |
     \ highlight ledgerDate cterm=NONE ctermfg=128
 
-  autocmd FileType ledger syntax match
-    \ ledgerIncome "  Income:[A-Za-z0-9:]*" |
+  autocmd FileType ledger
+    \ syntax match ledgerIncome "  Income:[A-Za-z0-9:]*" |
     \ highlight ledgerIncome cterm=NONE ctermfg=199
 
-  autocmd FileType ledger syntax match
-    \ ledgerExpenses "  Expenses:[A-Za-z0-9:]*" |
+  autocmd FileType ledger
+    \ syntax match ledgerExpenses "  Expenses:[A-Za-z0-9:]*" |
     \ highlight ledgerExpenses cterm=NONE ctermfg=219
 
-  autocmd FileType ledger syntax match
-    \ ledgerLiabilities "  Liabilities:[A-Za-z0-9:]*" |
+  autocmd FileType ledger
+    \ syntax match ledgerLiabilities "  Liabilities:[A-Za-z0-9:]*" |
     \ highlight ledgerLiabilities cterm=NONE ctermfg=118
 
-  autocmd FileType ledger syntax match
-    \ ledgerAssets "  Assets:[A-Za-z0-9:]*" |
+  autocmd FileType ledger
+    \ syntax match ledgerAssets "  Assets:[A-Za-z0-9:]*" |
     \ highlight ledgerAssets cterm=NONE ctermfg=169
 augroup END
 
