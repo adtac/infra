@@ -9,6 +9,7 @@ services:
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
       - ${HOME}/www:/www
+      - /var/log/nginx.log:/custom.log
     networks:
       - io_network
 

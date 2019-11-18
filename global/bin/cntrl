@@ -64,7 +64,7 @@ fi
 
 if [[ "$1" == "temperature" ]]; then
   if [[ "$2" == "get" ]]; then
-    sensors | grep Package | awk '{ print $4 }' | cut -d '+' -f 2
+    sensors | grep temp1 | head -n 1 | awk '{ print $2 }' | cut -d '+' -f 2
   fi
 fi
 

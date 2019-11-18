@@ -13,7 +13,7 @@ order += "battery 0"
 order += "wireless wlp2s0"
 order += "time"
 
-wireless wlp2s0 {
+wireless wlp1s0 {
   format_up   = "⠴ %essid"
   format_down = "⠴ Not connected"
 }
