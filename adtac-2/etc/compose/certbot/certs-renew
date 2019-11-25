@@ -1,17 +1,11 @@
 #!/bin/sh
 
 while true; do
-  [[ -d /etc/letsencrypt/live/adtac.in && -d /etc/letsencrypt/live/commento.io ]] && sleep 86400
+  sleep 86400
   certbot certonly \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --preferred-challenges dns \
     -d '*.adtac.in' -d 'adtac.in' \
     --dns-digitalocean --dns-digitalocean-credentials /etc/digitalocean.ini \
     -n --agree-tos --email adtac@adtac.in
-  certbot certonly \
-    --server https://acme-v02.api.letsencrypt.org/directory \
-    --preferred-challenges dns \
-    -d '*.commento.io' -d 'commento.io' \
-    --dns-google --dns-google-credentials /etc/google-cloud.json \
-    -n --agree-tos --email adtac@commento.io
 done
