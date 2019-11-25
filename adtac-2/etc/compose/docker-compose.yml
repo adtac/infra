@@ -13,6 +13,7 @@ services:
       - plex_network
       - cgit_network
       - transmission_network
+      - version_network
 
   certbot:
     build: ./certbot
@@ -54,10 +55,16 @@ services:
     networks:
       - transmission_network
 
+  version:
+    image: registry.gitlab.com/commento/misc/version:latest
+    networks:
+      - version_network
+
 networks:
   plex_network:
   cgit_network:
   transmission_network:
+  version_network:
 
 volumes:
   plex_data:
