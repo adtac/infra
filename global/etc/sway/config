@@ -122,6 +122,7 @@ bindsym XF86MonBrightnessUp   exec cntrl -r brightness inc 2.5
 bindsym XF86MonBrightnessDown exec cntrl -r brightness dec 2.5
 bindsym XF86AudioPlay         exec mpc toggle
 bindsym XF86AudioPause        exec mpc toggle
+bindsym XF86Favorites         exec mpc toggle
 bindsym XF86AudioNext         exec mpc next
 bindsym XF86AudioPrev         exec mpc prev
 
