@@ -5,6 +5,7 @@ After=graphical.target
 
 [Service]
 Type=simple
+Environment=DISPLAY=:0
 ExecStart=dunst
 
 [Install]
