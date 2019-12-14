@@ -1,0 +1,12 @@
+[Unit]
+Description=dunst notification on low battery
+Wants=graphical.target dunst.service
+After=graphical.target dunst.service
+
+[Service]
+Type=simple
+Environment=DUNST_ID=1001
+ExecStart=%h/bin/acpi-dunst
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+if [[ -z "$DUNST_ID" ]]; then
+  echo "DUNST_ID not set"
+  exit 1
+fi
+
+THRESHOLD_PERCENTAGE=5
+
+while sleep 60; do
+  acpi=$(acpi)
+  if echo "$acpi" | grep -q 'Charging'; then
+    dunstify --close="$DUNST_ID"
+    continue
+  fi
+
+  percentage=$(echo "$acpi" | grep -oP '\d+%' | tr -d '%')
+  if [[ "$percentage" -lt "$THRESHOLD_PERCENTAGE" ]]; then
+    dunstify --replace="$DUNST_ID" --appname="acpi" --urgency="critical" "less than ${THRESHOLD_PERCENTAGE}% power remaining"
+  fi
+done
