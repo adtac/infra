@@ -16,7 +16,7 @@
     horizontal_padding = 8
 
     format = "[%a] <b>%s</b>\n%b"
-    font = VT323 8
+    font = VT323 12
     line_height = 0
     markup = full
     alignment = left
