@@ -51,7 +51,6 @@ set formatoptions+=ro                  " continue comments on the next line
 syntax enable
 filetype plugin indent on
 
-" wildmenu options
 set wildignore=*.o,*~,*.pyc,.git\*,.hg\*,.svn\*
 
 " remember cursor position
@@ -61,8 +60,6 @@ autocmd BufReadPost *
   \ endif
 autocmd BufLeave * let b:winview = winsaveview()
 autocmd BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
-
-autocmd BufNewFile,BufRead *.txt set filetype=markdown | set syntax=markdown
 
 augroup ledger
   autocmd FileType * set colorcolumn=0
@@ -113,7 +110,6 @@ augroup ledger
     \ highlight ledgerAssets cterm=NONE ctermfg=169
 augroup END
 
-" statusline
 set statusline=\ %<#%02n\ %f\ %=%{&filetype!=#''?&filetype:'none'}%m\ %l:%c/%L\ 
 set laststatus=2
 
@@ -124,17 +120,14 @@ nnoremap <space> i
 nnoremap j gj
 nnoremap k gk
 
-" switch to the most recent buffer
 nnoremap ,. <C-^>
 
 " TeX compile: use a clean build each time because TeX is weird like that
 nnoremap ,d :!rm *.aux; pdflatex % && bibtex %:r && pdflatex % && pdflatex %<cr>
 nmap ,c ,d,d
 
-" clear search highlight
 nnoremap <silent> ,, :noh<cr>
 
-" search for visual selection
 vnoremap // y/<C-R>"<CR>
 
 " basic theming: these colour numbers might not make sense unless you have the
