@@ -71,7 +71,7 @@ def match_file(trackNumber, name, length):
             if name.lower() in fname.lower():
                 total_score += 0.3
 
-            if fnametn != "" and fnametn != trackNumber:
+            if fnametn != "" and fnametn == trackNumber:
                 total_score += 1
 
             flac = FLAC(f)
