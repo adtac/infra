@@ -160,8 +160,10 @@ def set_album(amid, interactive=False):
         flac["ALBUMARTIST"] = albumArtists
         flac["DATE"] = year
         flac["GENRE"] = genre
-
         flac.save()
+
+        print("    renaming file...")
+        os.rename(f, "{} - {}.flac".format(trackNumber, name))
 
 def main():
     global country
