@@ -62,7 +62,7 @@ def match_file(trackNumber, name, length):
                 fnametn = int(fnametn)
 
             fname = fname.strip()
-            if fname[0] == "-":
+            if fname[0] == "-" or fname[0] == ".":
                 fname = fname[1:].strip()
 
             total_score = 0
