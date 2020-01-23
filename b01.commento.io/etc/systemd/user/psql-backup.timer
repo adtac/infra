@@ -1,0 +1,13 @@
+[Unit]
+Description=psql backup timer
+After=network.service
+
+[Timer]
+OnActiveSec=0min
+AccuracySec=1sec
+OnCalendar=*-*-* 01:00:00
+Unit=psql-backup.service
+Persistent=true
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=psql backup service
+After=network.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/bin/psql-backup
+
+[Install]
+WantedBy=default.target
