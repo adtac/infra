@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+env_check() {
+  exitcode=0
+  for var in DBNAME HOST PORT USERNAME PASSWORD DUMP_DIRECTORY BORG_DIRECTORY; do
+    if [[ -z "$(eval echo "$"PSQL_BACKUP_${var})" ]]; then
+      printf "missing environment variable PSQL_BACKUP_%s\n" "$var"
+      exitcode=1
+    fi
+  done
+
+  if [[ "$exitcode" != 0 ]]; then
+    exit "$exitcode"
+  fi
+}
+
+psql_dump() {
+  PGPASSWORD="${PSQL_BACKUP_PASSWORD}"   \
+  pg_dump                                \
+    --host="${PSQL_BACKUP_HOST}"         \
+    --port="${PSQL_BACKUP_PORT}"         \
+    --username="${PSQL_BACKUP_USERNAME}" \
+    --dbname="${PSQL_BACKUP_DBNAME}"     \
+    --format="plain"                     \
+    --file="${PSQL_BACKUP_DUMP_DIRECTORY}/${PSQL_BACKUP_DBNAME}.dump"
+}
+
+borg_name() {
+  printf "%s-%s" "${PSQL_BACKUP_DBNAME}" "$(date +%Y%m%d%H%M%S)"
+}
+
+create_borg() {
+  borg create \
+    --stats \
+    --compression lz4 \
+    "${PSQL_BACKUP_BORG_DIRECTORY}::"$(borg_name) \
+    "${PSQL_BACKUP_DUMP_DIRECTORY}"
+}
+
+old_cleanup() {
+  rm -vrf "${PSQL_BACKUP_DUMP_DIRECTORY}/${PSQL_BACKUP_DBNAME}"
+}
+
+main() {
+  env_check
+  old_cleanup
+  psql_dump
+  create_borg
+}
+
+main $*
