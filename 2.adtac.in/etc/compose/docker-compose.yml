@@ -14,6 +14,7 @@ services:
       - cgit_network
       - transmission_network
       - version_network
+      - status_network
 
   certbot:
     build: ./certbot
@@ -61,13 +62,22 @@ services:
     networks:
       - version_network
 
+  status:
+    image: registry.gitlab.com/commento/misc/status:latest
+    networks:
+      - status_network
+    volumes:
+      - status_data:/data
+
 networks:
   plex_network:
   cgit_network:
   transmission_network:
   version_network:
+  status_network:
 
 volumes:
   plex_data:
   transmission_data:
   transmission_watch:
+  status_data:
