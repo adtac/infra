@@ -16,7 +16,12 @@ env_check() {
   fi
 }
 
+old_cleanup() {
+  rm -vrf "${PSQL_BACKUP_DUMP_DIRECTORY}/${PSQL_BACKUP_DBNAME}"
+}
+
 psql_dump() {
+  printf "dumping postgres...\n"
   PGPASSWORD="${PSQL_BACKUP_PASSWORD}"   \
   pg_dump                                \
     --host="${PSQL_BACKUP_HOST}"         \
@@ -31,23 +36,32 @@ borg_name() {
   printf "%s-%s" "${PSQL_BACKUP_DBNAME}" "$(date +%Y%m%d%H%M%S)"
 }
 
-create_borg() {
+borg_create() {
+  printf "creating borg backups...\n"
   borg create \
     --stats \
-    --compression lz4 \
+    --list \
+    --compression zstd,9 \
     "${PSQL_BACKUP_BORG_DIRECTORY}::"$(borg_name) \
     "${PSQL_BACKUP_DUMP_DIRECTORY}"
 }
 
-old_cleanup() {
-  rm -vrf "${PSQL_BACKUP_DUMP_DIRECTORY}/${PSQL_BACKUP_DBNAME}"
+borg_prune() {
+  printf "pruning borg backups...\n"
+  borg prune \
+    --stats \
+    --list \
+    --keep-within 15d \
+    --prefix="${PSQL_BACKUP_DBNAME}-" \
+    "${PSQL_BACKUP_BORG_DIRECTORY}"
 }
 
 main() {
   env_check
   old_cleanup
   psql_dump
-  create_borg
+  borg_create
+  borg_prune
 }
 
 main $*
