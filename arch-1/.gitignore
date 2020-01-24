@@ -1,4 +1,0 @@
-pkgbuild/*/pkg
-pkgbuild/*/src
-pkgbuild/*/*.tar.xz
-pkgbuild/*/*.tar.bz2
