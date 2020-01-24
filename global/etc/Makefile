@@ -1,10 +1,14 @@
 SHELL := /bin/bash
 
 .PHONY: workstation
-workstation: sway i3status dunst termite mpd ncmpcpp mpdscribble zathura zsh vim git ledger
+workstation: config sway i3status dunst termite mpd ncmpcpp mpdscribble zathura zsh vim git ledger
 
 .PHONY: server
-server: zsh vim git
+server: config zsh vim git
+
+.PHONY: config
+config:
+	mkdir -p ${HOME}/.config
 
 .PHONY: sway
 sway:
