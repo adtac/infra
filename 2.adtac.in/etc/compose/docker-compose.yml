@@ -64,6 +64,8 @@ services:
 
   status:
     image: registry.gitlab.com/commento/misc/status:latest
+    environment:
+      SQLITE3: /data/status.sqlite3
     networks:
       - status_network
     volumes:
