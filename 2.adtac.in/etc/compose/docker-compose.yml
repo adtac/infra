@@ -10,6 +10,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
       - /etc/htaccess:/etc/htaccess
       - ${HOME}/www:/www
+      - ${HOME}/media/music:/media/music
     networks:
       - plex_network
       - cgit_network
