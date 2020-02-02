@@ -8,6 +8,7 @@ services:
       - 443:443
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/htaccess:/etc/htaccess
       - ${HOME}/www:/www
     networks:
       - plex_network
