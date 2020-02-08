@@ -20,9 +20,9 @@ alias ls='ls --group-directories-first --color=auto'
 
 function ledger_file() {
   case $1 in
-    "") echo "$HOME/docs/finances/personal.ledger" ;;
-    a)  echo "$HOME/docs/finances/personal.ledger" ;;
-    c)  echo "$HOME/docs/finances/commento.ledger" ;;
+    "") echo "$HOME/docs/adhityaa/finances/ledger" ;;
+    a)  echo "$HOME/docs/adhityaa/finances/ledger" ;;
+    c)  echo "$HOME/docs/commento/finances/ledger" ;;
   esac
 }
 
@@ -35,14 +35,27 @@ function nw() {
     "^Assets" and not "^Assets:Safe" and not "^Assets:Wallet" or "^Liabilities" ${@:2}
 }
 
+function mreg() {
+  ledger --strict -f "$(ledger_file $1)" register --period-sort "(amount)" ${@:2}
+}
+
 function mexp() {
   ledger --strict -f "$(ledger_file $1)" register -M --period-sort "(amount)" \
     "^Expenses" and not "^Expenses:Tax" ${@:2}
 }
 
+function mexpt() {
+  ledger --strict -f "$(ledger_file $1)" register -M --period-sort "(amount)" \
+    "^Expenses" ${@:2}
+}
+
 function minc() {
   ledger --strict -f "$(ledger_file $1)" register -M --period-sort "(amount)" \
     "^Income" and not "^Income:Misc" ${@:2}
+}
+
+function le() {
+  $EDITOR "$(ledger_file $1)"
 }
 
 alias grep='grep --color=auto'

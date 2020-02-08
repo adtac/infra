@@ -63,50 +63,55 @@ autocmd BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
 
 augroup ledger
   autocmd FileType * set colorcolumn=0
-  autocmd BufNewFile,BufRead *.ledger set filetype=ledger
-  autocmd FileType ledger set colorcolumn=50
+  autocmd BufNewFile,BufRead ledger set filetype=ledger
+  autocmd FileType ledger set colorcolumn=80
 
   imap <C-F> <Esc>:exe "normal a" . repeat(" ", 71 - strwidth(getline(".")))<cr>A
 
   autocmd FileType ledger
     \ syntax match ledgerStrict "^commodity .*" |
     \ syntax match ledgerStrict "^account .*" |
+    \ syntax match ledgerStrict "^tag .*" |
     \ highlight ledgerStrict cterm=NONE ctermfg=107
+  
+  autocmd FileType ledger
+    \ syntax match ledgerApply "^\(\|end \)apply [a-z]*" containedin=ALL |
+    \ highlight ledgerApply cterm=reverse ctermbg=222 ctermfg=170
 
   autocmd FileType ledger
-    \ syntax match ledgerDebit "[0-9\.]\+ [A-Z]\+$" |
+    \ syntax match ledgerDebit "[0-9\.]\+ [A-Z]\+" |
     \ highlight ledgerDebit cterm=NONE ctermfg=199
 
   autocmd FileType ledger
-    \ syntax match ledgerCredit "-[0-9\.]\+ [A-Z]\+$" |
+    \ syntax match ledgerCredit "-[0-9\.]\+ [A-Z]\+" |
     \ highlight ledgerCredit cterm=NONE ctermfg=119
 
   autocmd FileType ledger
-    \ syntax match ledgerComment "^#.*$" |
-    \ highlight link ledgerComment Comment
+    \ syntax match ledgerCommentTag "\(^\|\ \{2}\)[#;].*$" |
+    \ highlight link ledgerCommentTag Comment
 
   autocmd FileType ledger
     \ syntax match ledgerDate "^[0-9]\{2}-[A-Za-z]\{3}-[0-9]\{4}" |
     \ highlight ledgerDate cterm=NONE ctermfg=128
 
   autocmd FileType ledger
-    \ syntax match ledgerIncome "  Equity:[A-Za-z0-9:]*" |
-    \ highlight ledgerIncome cterm=NONE ctermfg=189
+    \ syntax match ledgerEquity "  (\?Equity:[A-Za-z0-9:]*)\?" |
+    \ highlight ledgerEquity cterm=NONE ctermfg=189
 
   autocmd FileType ledger
-    \ syntax match ledgerIncome "  Income:[A-Za-z0-9:]*" |
+    \ syntax match ledgerIncome "  (\?Income:[A-Za-z0-9:]*)\?" |
     \ highlight ledgerIncome cterm=NONE ctermfg=199
 
   autocmd FileType ledger
-    \ syntax match ledgerExpenses "  Expenses:[A-Za-z0-9:]*" |
+    \ syntax match ledgerExpenses "  (\?Expenses:[A-Za-z0-9:]*)\?" |
     \ highlight ledgerExpenses cterm=NONE ctermfg=219
 
   autocmd FileType ledger
-    \ syntax match ledgerLiabilities "  Liabilities:[A-Za-z0-9:]*" |
+    \ syntax match ledgerLiabilities "  (\?Liabilities:[A-Za-z0-9:]*)\?" |
     \ highlight ledgerLiabilities cterm=NONE ctermfg=118
 
   autocmd FileType ledger
-    \ syntax match ledgerAssets "  Assets:[A-Za-z0-9:]*" |
+    \ syntax match ledgerAssets "  (\?Assets:[A-Za-z0-9:]*)\?" |
     \ highlight ledgerAssets cterm=NONE ctermfg=169
 augroup END
 
