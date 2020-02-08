@@ -1,17 +1,25 @@
 #!/usr/bin/env python
 
+import argparse
 import os
+import json
 import sys
 import difflib
 import requests
 import urllib
+import spotipy
 from mutagen.flac import FLAC, Picture
+from spotipy.oauth2 import SpotifyClientCredentials
 
-headers = {
-    "Authorization": "Bearer {}".format(os.getenv("TOKEN"))
+parser = argparse.ArgumentParser(description="flacmatch matches FLAC files")
+parser.add_argument("--provider", type=str, choices=["apple", "spotify"], default="apple", help="upstream provider")
+parser.add_argument("--country", type=str, default="us", help="upstream provider country")
+parser.add_argument("--id", type=str, required=True, help="album ID in upstream provider")
+parser.add_argument("--interactive", type=bool, help="process album interactively")
+
+apple_headers = {
+    "Authorization": "Bearer {}".format(os.getenv("APPLE_TOKEN"))
 }
-
-country = "us"
 
 def similarity(x, y):
     return difflib.SequenceMatcher(a=x.lower(), b=y.lower()).ratio()
@@ -26,25 +34,6 @@ def artistSplit(s):
 
     for artist in s.split(","):
         yield artist.strip()
-
-def search(album):
-    global headers
-    url = "https://api.music.apple.com/v1/catalog/{}/search?{}".format(
-        country, urllib.parse.urlencode({"term": album, "limit": 10}))
-    print("searching for '{}'...".format(album))
-    r = requests.get(url, headers=headers)
-    if r.status_code == 200:
-        return r.json(), None
-    return None, {"status": r.status_code, "body": r.text}
-
-def get_album(amid):
-    global headers
-    url = "https://api.music.apple.com/v1/catalog/{}/albums?ids={}".format(country, amid)
-    print("getting AMID {}...".format(amid))
-    r = requests.get(url, headers=headers)
-    if r.status_code == 200:
-        return r.json(), None
-    return None, {"status": r.status_code, "body": r.text}
 
 def match_file(trackNumber, name, length):
     matches = []
@@ -85,48 +74,39 @@ def match_file(trackNumber, name, length):
 
     return sorted(matches)[-1]
 
-def set_album(amid, interactive=False):
-    result, err = get_album(amid)
-    if err is not None: return err
-
-    album = result["data"][0]
-    attrs = album["attributes"]
-
-    print("downloading artwork 500x500...")
+def set_cover(url, width, height):
+    print("downloading artwork {}x{}...".format(width, height))
     picture = Picture()
     with open("cover.jpg", "wb") as f:
-        r = requests.get(attrs["artwork"]["url"].replace("{w}", "500").replace("{h}", "500"))
+        r = requests.get(url)
         data = r.content
         f.write(data)
         picture.data = data
-        picture.mime = u"image/jpeg"
-        picture.width = 500
-        picture.height = 500
+        picture.mime = "image/jpeg"
+        picture.width = width
+        picture.height = height
+    return picture
 
-    albumName = attrs["name"]
-    
-    albumArtists = list(artistSplit(attrs["artistName"]))
+def get_disc_count(tracks):
+    disc_count = 0
+    for track in tracks:
+        disc_count = max(disc_count, track["disc_number"])
+    return disc_count
 
-    totalDiscs = 1
-    if "discCount" in attrs:
-        totalDiscs = attrs["discCount"]
-    totalTracks = attrs["trackCount"]
-    tracks = []
-    for track in album["relationships"]["tracks"]["data"]:
-        track = track["attributes"]
+def set_album(interactive=False, album_name=None, album_artists=None, year=None, tracks=None, cover=None):
+    disc_count = get_disc_count(tracks)
+    track_count = len(tracks)
+    for track in tracks:
         name = track["name"]
-        trackNumber = track["trackNumber"]
-        artists = list(artistSplit(track["artistName"]))
-        year = track["releaseDate"]
-        if "-" in year:
-            year = year.split("-")[0]
-        genre = track["genreNames"]
-        discNumber = track["discNumber"]
-        print("  ({}.{}/{}.{}) {}".format(discNumber, trackNumber, totalDiscs, totalTracks, name))
+        artists = track["artists"]
+        track_number = track["track_number"]
+        disc_number = track["disc_number"]
+        duration = track["duration"]
+        print("  ({}.{}/{}.{}) {}".format(disc_number, track_number, disc_count, track_count, name))
 
         f, flac = None, None
         if not interactive:
-            best = match_file(trackNumber, name, track["durationInMillis"])
+            best = match_file(track_number, name, duration)
             score, f, flac = best
             if score < 1.35:
                 print("    no match found (best = {})".format(best))
@@ -147,66 +127,100 @@ def set_album(amid, interactive=False):
 
         print("    setting cover art...")
         flac.clear_pictures()
-        flac.add_picture(picture)
+        flac.add_picture(cover)
 
         print("    resetting tags...")
         flac.delete()
         flac["TITLE"] = name
         flac["ARTIST"] = artists
-        flac["ALBUM"] = albumName
-        flac["TRACKNUMBER"] = str(trackNumber)
-        flac["TOTALTRACKS"] = str(totalTracks)
-        flac["DISCNUMBER"] = str(discNumber)
-        flac["ALBUMARTIST"] = albumArtists
+        flac["ALBUM"] = album_name
+        flac["TRACKNUMBER"] = str(track_number)
+        flac["TOTALTRACKS"] = str(track_count)
+        flac["DISCNUMBER"] = str(disc_number)
+        flac["ALBUMARTIST"] = album_artists
         flac["DATE"] = year
-        flac["GENRE"] = genre
         flac.save()
 
         print("    renaming file...")
-        os.rename(f, "{} - {}.flac".format(trackNumber, name))
+        os.rename(f, "{:02d} - {}.flac".format(track_number, name))
+
+def spotify_set_album(spid, interactive=False):
+    sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+
+    print("getting SPID {}...".format(spid))
+    album = sp.album(spid)
+
+    cover = set_cover(album["images"][0]["url"], album["images"][0]["width"], album["images"][0]["height"])
+
+    tracks = []
+    for track in album["tracks"]["items"]:
+        tracks.append({
+            "name": track["name"],
+            "artists": [artist["name"] for artist in track["artists"]],
+            "disc_number": track["disc_number"],
+            "track_number": track["track_number"],
+            "duration": track["duration_ms"],
+        })
+
+    return set_album(
+        interactive=interactive,
+        album_name=album["name"],
+        album_artists=[artist["name"] for artist in album["artists"]],
+        year=album["release_date"].split("-")[0],
+        tracks=tracks,
+        cover=cover,
+    )
+
+
+def apple_set_album(country, amid, interactive=False):
+    apple_headers = {
+    }
+    url = "https://api.music.apple.com/v1/catalog/{}/albums?ids={}".format(country, amid)
+    print("getting AMID {}...".format(amid))
+    r = requests.get(url, headers={
+        "Authorization": "Bearer {}".format(os.getenv("APPLE_TOKEN"))
+    })
+    if r.status_code != 200: return r.text
+    result = r.json()
+
+    if len(result["data"]) == 0:
+        print("no such AMID")
+        return
+
+    album = result["data"][0]
+    attrs = album["attributes"]
+
+    cover = set_cover(attrs["artwork"]["url"].replace("{w}", "500").replace("{h}", "500"), 500, 500)
+
+    year = 1e9
+    tracks = []
+    for track in album["relationships"]["tracks"]["data"]:
+        attrs = track["attributes"]
+        year = min(int(attrs["releaseDate"].split("-")[0]), year)
+        tracks.append({
+            "name": attrs["name"],
+            "artists": list(artistSplit(attrs["artistName"])),
+            "disc_number": attrs["discNumber"],
+            "track_number": attrs["trackNumber"],
+            "duration": attrs["durationInMillis"],
+        })
+
+    set_album(
+        interactive=interactive,
+        album_name=attrs["name"],
+        album_artists=list(artistSplit(attrs["artistName"])),
+        year=str(year),
+        tracks=tracks,
+        cover=cover,
+    )
 
 def main():
     global country
-
-    if len(sys.argv) < 2:
-        print("no argument given")
-        return
-
-    interactive = False
-    if sys.argv[1] == "-i":
-        interactive = True
-        sys.argv.pop(1)
-
-    if sys.argv[1] == "-c":
-        sys.argv.pop(1)
-        country = sys.argv[1]
-        sys.argv.pop(1)
-
-    amid = ""
-    arg = " ".join(sys.argv[1:])
-    argAmid = False
-    try:
-        amid = str(int(arg))
-        argAmid = True
-    except Exception as e:
-        argAmid = False
-
-    if not argAmid:
-        results, err = search(arg)
-        if err is not None: return err
-
-        print("selecting first result:")
-        amid = results["results"]["albums"]["data"][0]["id"]
-        album = results["results"]["albums"]["data"][0]["attributes"]
-        name = album["name"]
-        year = album["releaseDate"]
-        if "-" in year:
-            year = year.split("-")[0]
-        albumArtists = list(artistSplit(album["artistName"]))
-        print("  {} ({})".format(name, year, albumArtists))
-        print("  {}".format(albumArtists))
-
-    return set_album(amid, interactive=interactive)
+    args = parser.parse_args()
+    if args.provider == "apple":
+        return apple_set_album(args.country, args.id, interactive=args.interactive)
+    else:
+        return spotify_set_album(args.id, interactive=args.interactive)
 
 if __name__ == "__main__":
     err = main()
