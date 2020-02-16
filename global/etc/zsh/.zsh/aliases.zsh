@@ -68,6 +68,7 @@ alias g="git show"
 alias gh="git show HEAD"
 alias gs="git status"
 alias gl="git log"
+alias ga="git add"
 alias gaa="git add -A"
 alias gca="git commit --amend"
 alias gcm="git commit -m"
@@ -88,43 +89,12 @@ alias gcpc="git cherry-pick --continue"
 alias gcpa="git cherry-pick --abort"
 alias gpar="git remote | xargs -L1 git push --all"
 
-alias t="task"
-alias tl="task all status:pending or status:waiting"
-alias tc="task calendar"
-alias ta="task add"
-alias te="task edit"
-alias tm="task modify"
-alias tu="task undo"
-alias ts="task start"
-tf() { task done "$@" }
-alias tx="task delete"
-alias tt="yes | task stop"
-tp() { task "(status:pending or status:waiting) and project:$1" }
-alias tn="task $1 annotate"
+t() {
+  $EDITOR $HOME/docs/adhityaa/log
+}
 
 alias dl="axel -n 8 -a"
 
-alias gp="grep \"^\$(cut -d ' ' -f 1 ~/tmp/g | shuf -n 1) \" ~/tmp/g"
-
-alias dcf="ssh -t cs2810-1@10.6.15.181 '~/.local/share/junest/bin/junest -f -- zsh'"
-
-alias db="ssh db.commento.io -p 2222 -t 'sudo -u postgres PAGER=\"less -SF\" psql commento'"
-alias prod="./build && scp -P 2222 -r prod/* static.commento.io:~/www/commento.io"
-
 open() {
     xdg-open $1 2>/dev/null 1>/dev/null &
-}
-
-f320() {
-  res="$(echo "$1" | cut -d '-' -f -2 | xargs) - MP3 320"
-  echo "$res"
-  flac2mp3.pl --preset=320 --processes=8 "$1" "$res"
-  mkt "$res"
-}
-
-fv0() {
-  res="$(echo "$1" | cut -d '-' -f -2 | xargs) - MP3 V0"
-  echo "$res"
-  flac2mp3.pl --preset=V0 --processes=8 "$1" "$res"
-  mkt "$res"
 }
