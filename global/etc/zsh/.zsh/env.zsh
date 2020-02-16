@@ -1,4 +1,5 @@
-export XKB_DEFAULT_OPTIONS=caps:escape,
+export XKB_DEFAULT_LAYOUT=us(altgr-intl)
+export XKB_DEFAULT_OPTIONS=caps:escape,lv3:ralt_switch
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 export XDG_SESSION_TYPE=wayland    # use wayland
 export TERM=screen-256color        # screen
