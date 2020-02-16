@@ -22,7 +22,6 @@ services:
     build: ./certbot
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-      - ${HOME}/.config/digitalocean/digitalocean.ini:/etc/digitalocean.ini
       - ${HOME}/.config/google-cloud/google-cloud.json:/etc/google-cloud.json
 
   plex:
