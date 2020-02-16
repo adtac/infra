@@ -1,12 +1,12 @@
 #!/bin/sh
 
 while true; do
-  [[ -d /etc/letsencrypt/live ]] && sleep 86400
+  [[ -d /etc/letsencrypt/live/commento.io ]] && sleep 86400
   certbot certonly \
     --server https://acme-v02.api.letsencrypt.org/directory \
     --preferred-challenges dns \
     -d '*.commento.io' -d 'commento.io' \
-    --dns-route53 --dns-route53-propagation-seconds 30 \
+    --dns-google --dns-google-credentials /etc/google-cloud.json \
     -n --agree-tos --email adtac@commento.io
   sleep 60
 done
