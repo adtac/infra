@@ -77,6 +77,7 @@ bindsym $mod+Shift+9 move container to workspace $ws9
 # reload the configuration file
 bindsym $mod+Shift+c reload
 
+bindsym $mod+Ctrl+Shift+q exit
 
 # class                 border     background  text       indicator  child-border
 client.focused          #d6336c  #d6336c   #ffffff  #d6336c  #d6336c
