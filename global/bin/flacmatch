@@ -17,23 +17,33 @@ parser.add_argument("--country", type=str, default="us", help="upstream provider
 parser.add_argument("--id", type=str, required=True, help="album ID in upstream provider")
 parser.add_argument("--interactive", type=bool, help="process album interactively")
 
-apple_headers = {
-    "Authorization": "Bearer {}".format(os.getenv("APPLE_TOKEN"))
-}
-
 def similarity(x, y):
     return difflib.SequenceMatcher(a=x.lower(), b=y.lower()).ratio()
 
-def artistSplit(s):
+_artist_map = {
+    "A.R. Rahman": "A. R. Rahman",
+}
+
+def artist_map(artist):
+    if artist in _artist_map:
+        return _artist_map[artist]
+    else:
+        return artist
+
+def _artist_split(s):
     comps = s.split("&")
     if len(comps) > 1:
-        for artist in artistSplit("&".join(comps[:-1])):
+        for artist in artist_split("&".join(comps[:-1])):
             yield artist
         yield comps[-1].strip()
         return
 
     for artist in s.split(","):
         yield artist.strip()
+
+def artist_split(s):
+    for artist in _artist_split(s):
+        yield artist_map(artist)
 
 def match_file(trackNumber, name, length):
     matches = []
@@ -156,7 +166,7 @@ def spotify_set_album(spid, interactive=False):
     for track in album["tracks"]["items"]:
         tracks.append({
             "name": track["name"],
-            "artists": [artist["name"] for artist in track["artists"]],
+            "artists": [artist_map(artist["name"]) for artist in track["artists"]],
             "disc_number": track["disc_number"],
             "track_number": track["track_number"],
             "duration": track["duration_ms"],
@@ -165,7 +175,7 @@ def spotify_set_album(spid, interactive=False):
     return set_album(
         interactive=interactive,
         album_name=album["name"],
-        album_artists=[artist["name"] for artist in album["artists"]],
+        album_artists=[artist_map(artist["name"]) for artist in album["artists"]],
         year=album["release_date"].split("-")[0],
         tracks=tracks,
         cover=cover,
@@ -173,8 +183,6 @@ def spotify_set_album(spid, interactive=False):
 
 
 def apple_set_album(country, amid, interactive=False):
-    apple_headers = {
-    }
     url = "https://api.music.apple.com/v1/catalog/{}/albums?ids={}".format(country, amid)
     print("getting AMID {}...".format(amid))
     r = requests.get(url, headers={
@@ -199,7 +207,7 @@ def apple_set_album(country, amid, interactive=False):
         year = min(int(attrs["releaseDate"].split("-")[0]), year)
         tracks.append({
             "name": attrs["name"],
-            "artists": list(artistSplit(attrs["artistName"])),
+            "artists": list(artist_split(attrs["artistName"])),
             "disc_number": attrs["discNumber"],
             "track_number": attrs["trackNumber"],
             "duration": attrs["durationInMillis"],
@@ -208,7 +216,7 @@ def apple_set_album(country, amid, interactive=False):
     set_album(
         interactive=interactive,
         album_name=attrs["name"],
-        album_artists=list(artistSplit(attrs["artistName"])),
+        album_artists=list(artist_split(attrs["artistName"])),
         year=str(year),
         tracks=tracks,
         cover=cover,
