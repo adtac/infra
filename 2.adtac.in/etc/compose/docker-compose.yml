@@ -47,7 +47,6 @@ services:
   transmission:
     build: ./transmission
     ports:
-      - 9091:9091
       - 51413:51413
     environment:
       TRANSMISSION_PASSWORD: ${TRANSMISSION_PASSWORD}
