@@ -1,3 +1,4 @@
+mpd_host                              = local.adtac.wg
 user_interface                        = alternative
 mpd_music_dir                         = ~/media/music
 execute_on_song_change                = killall -USR1 i3status
