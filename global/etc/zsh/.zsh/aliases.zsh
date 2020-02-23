@@ -98,3 +98,5 @@ alias dl="axel -n 8 -a"
 open() {
     xdg-open $1 2>/dev/null 1>/dev/null &
 }
+
+alias rc="rclone --config ~/.config/rclone/secrets -P --no-traverse"
