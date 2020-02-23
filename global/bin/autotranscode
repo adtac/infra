@@ -1,0 +1,122 @@
+#!/usr/bin/env python
+
+import argparse
+import subprocess
+import multiprocessing
+import os
+
+parser = argparse.ArgumentParser(description="autotranscode transcodes FLAC to MP3 automatically")
+parser.add_argument("--source", type=str, required=True, help="source FLAC directory")
+parser.add_argument("--destination", type=str, required=True, help="destination MP3 directory")
+parser.add_argument("--vbr-quality", type=int, choices=[0, 1, 2], help="VBR quality")
+parser.add_argument("--dry-run", action="store_true", help="dry run without copying or deleting files")
+parser.add_argument("--workers", type=int, default=16, help="number of worker processes")
+
+dry_run = False
+vbr_quality = 0
+
+def get_tree(top):
+    result = set()
+    for dirpath, dirnames, filenames in os.walk(top):
+        for f in filenames:
+            result.add(os.path.join(dirpath, f))
+    return result
+
+def replace_dir(f, a, b):
+    if f.startswith(a):
+        return b + f[len(a):]
+    raise Exception("{} does not start with {}".format(f, a))
+
+def dest_to_source(f, source, dest):
+    base, ext = os.path.splitext(f)
+    if ext.lower() == ".mp3":
+        ext = ".flac"
+    return replace_dir(base + ext, dest, source)
+
+def source_to_dest(f, source, dest):
+    base, ext = os.path.splitext(f)
+    if ext.lower() == ".flac":
+        ext = ".mp3"
+    return replace_dir(base + ext, source, dest)
+
+def _wrapped_call(cmd):
+    if cmd[0] % 250 == 0:
+        print("  completed {}".format(cmd[0]))
+    cmd = cmd[1:]
+    if dry_run:
+        print(cmd)
+        return 0
+    return subprocess.call(cmd)
+
+class queue:
+    def __init__(self, workers):
+        self.pool = multiprocessing.Pool(processes=workers)
+        self.cmds = []
+
+    def add(self, cmd):
+        self.cmds.append([len(self.cmds)+1] + cmd)
+
+    def run(self):
+        return self.pool.map(_wrapped_call, self.cmds)
+
+def remove(q, f):
+    q.add(["rm", f])
+
+def copy(q, source_file, dest_file):
+    base, ext = os.path.splitext(source_file)
+    if ext.lower() != ".flac":
+        q.add(["cp", source_file, dest_file])
+        return
+
+    q.add(["ffmpeg", "-loglevel", "quiet", "-i", source_file, "-q:a", str(vbr_quality), "-map_metadata", "0", "-id3v2_version", "3", "-y", dest_file])
+
+def main():
+    global dry_run
+    args = parser.parse_args()
+    dry_run = args.dry_run
+    vbr_quality = args.vbr_quality
+    q = queue(args.workers)
+
+    print("calculating source tree")
+    source_tree = get_tree(args.source)
+
+    print("calculating destination tree")
+    destination_tree = get_tree(args.destination)
+
+    print("calculating files to prune")
+    for dest_file in destination_tree:
+        source_file = dest_to_source(dest_file, args.source, args.destination)
+        if source_file not in source_tree:
+            remove(q, dest_file)
+
+    print("calculating files to copy")
+    for source_file in source_tree:
+        dest_file = source_to_dest(source_file, args.source, args.destination)
+        if dest_file not in destination_tree:
+            copy(q, source_file, dest_file)
+
+    print("creating directories")
+    dirs = set()
+    for source_file in source_tree:
+        dest_file = source_to_dest(source_file, args.source, args.destination)
+        if dest_file not in destination_tree:
+            dirs.add(os.path.dirname(dest_file))
+    for dir in dirs:
+        if dry_run:
+            print(["mkdir", "-p", dir])
+        else:
+            os.makedirs(dir, exist_ok=True)
+
+    num_cmds = len(q.cmds)
+    print("running {} processes".format(num_cmds))
+    results = q.run()
+
+    num_zero = 0
+    for retcode in results:
+        if retcode == 0:
+            num_zero += 1
+
+    print("return code zero in {}/{}".format(num_zero, num_cmds))
+
+if __name__ == "__main__":
+    main()
