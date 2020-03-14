@@ -7,3 +7,6 @@
 [submodule "global/pkgbuild/bluez-git"]
 	path = global/pkgbuild/bluez-git
 	url = https://git.adtac.in/pkgbuild/bluez-git.git
+[submodule "global/pkgbuild/digimend-kernel-drivers-dkms-git"]
+	path = global/pkgbuild/digimend-kernel-drivers-dkms-git
+	url = https://aur.archlinux.org/digimend-kernel-drivers-dkms-git.git
