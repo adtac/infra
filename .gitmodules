@@ -14,3 +14,7 @@
 	path = global/pkgbuild/digimend-kernel-drivers-dkms-git
 	url = https://aur.archlinux.org/digimend-kernel-drivers-dkms-git.git
 	ignore = untracked
+[submodule "global/pkgbuild/sxiv-git"]
+	path = global/pkgbuild/sxiv-git
+	url = https://git.adtac.in/pkgbuild/sxiv-git.git
+	ignore = untracked
