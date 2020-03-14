@@ -4,3 +4,6 @@
 [submodule "global/pkgbuild/pulseaudio-modules-bt-git"]
 	path = global/pkgbuild/pulseaudio-modules-bt-git
 	url = https://aur.archlinux.org/pulseaudio-modules-bt-git.git
+[submodule "global/pkgbuild/bluez-git"]
+	path = global/pkgbuild/bluez-git
+	url = https://git.adtac.in/pkgbuild/bluez-git.git
