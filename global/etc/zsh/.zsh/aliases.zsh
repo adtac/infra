@@ -100,3 +100,7 @@ open() {
 }
 
 alias rc="rclone --config ~/.config/rclone/secrets -P --no-traverse"
+
+mkgit() {
+  sudo su git -s /bin/sh -c "mkdir -p ~/$1; cd ~/$1; git init --bare; echo '$1' >description"
+}
