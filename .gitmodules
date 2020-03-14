@@ -1,12 +1,16 @@
 [submodule "global/pkgbuild/libldac"]
 	path = global/pkgbuild/libldac
 	url = https://aur.archlinux.org/libldac.git
+	ignore = untracked
 [submodule "global/pkgbuild/pulseaudio-modules-bt-git"]
 	path = global/pkgbuild/pulseaudio-modules-bt-git
 	url = https://aur.archlinux.org/pulseaudio-modules-bt-git.git
+	ignore = untracked
 [submodule "global/pkgbuild/bluez-git"]
 	path = global/pkgbuild/bluez-git
 	url = https://git.adtac.in/pkgbuild/bluez-git.git
+	ignore = untracked
 [submodule "global/pkgbuild/digimend-kernel-drivers-dkms-git"]
 	path = global/pkgbuild/digimend-kernel-drivers-dkms-git
 	url = https://aur.archlinux.org/digimend-kernel-drivers-dkms-git.git
+	ignore = untracked
