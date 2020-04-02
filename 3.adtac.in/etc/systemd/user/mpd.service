@@ -1,5 +1,5 @@
 [Unit]
-Description=music player daemon (well, not really a daemon)
+Description=music player daemon
 After=network.target sound.target
 Wants=sshfs@music.service
 
