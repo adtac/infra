@@ -18,3 +18,7 @@
 	path = global/pkgbuild/bluez-git
 	url = https://git.adtac.in/pkgbuild/bluez-git.git
 	ignore = untracked
+[submodule "global/pkgbuild/wf-recorder-git"]
+	path = global/pkgbuild/wf-recorder-git
+	url = https://aur.archlinux.org/wf-recorder-git.git
+	ignore = untracked
