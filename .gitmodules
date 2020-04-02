@@ -22,3 +22,15 @@
 	path = global/pkgbuild/wf-recorder-git
 	url = https://aur.archlinux.org/wf-recorder-git.git
 	ignore = untracked
+[submodule "global/pkgbuild/v4l2loopback-dkms-git"]
+	path = global/pkgbuild/v4l2loopback-dkms-git
+	url = https://aur.archlinux.org/v4l2loopback-dkms-git.git
+	ignore = untracked
+[submodule "global/pkgbuild/ofono-git"]
+	path = global/pkgbuild/ofono-git
+	url = https://aur.archlinux.org/ofono-git.git
+	ignore = untracked
+[submodule "global/pkgbuild/phonesim"]
+	path = global/pkgbuild/phonesim
+	url = https://aur.archlinux.org/phonesim.git
+	ignore = untracked
