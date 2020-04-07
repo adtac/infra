@@ -74,7 +74,7 @@ services:
   wpodns:
     image: registry.gitlab.com/adtac/wpodns:latest
     ports:
-      - 2.adtac.in:53:53/udp
+      - 148.251.77.168:53:5353/udp
     networks:
       - wpodns_network
 
