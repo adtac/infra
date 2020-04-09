@@ -1,0 +1,15 @@
+[Unit]
+Description=phonesim for HFP/HSP modem simulation
+After=ofono.service pulseaudio.service
+
+[Service]
+Type=simple
+RestartSec=2s
+ExecStart=/usr/bin/phonesim -p 6601 /usr/share/phonesim/default.xml
+ExecStartPost=/usr/bin/sleep 0.5
+ExecStartPost=/usr/bin/dbus-send --print-reply --system --dest=org.ofono /phonesim org.ofono.Modem.SetProperty string:"Powered" variant:boolean:"true"
+ExecStartPost=/usr/bin/sleep 0.5
+ExecStartPost=/usr/bin/dbus-send --print-reply --system --dest=org.ofono /phonesim org.ofono.Modem.SetProperty string:"Online" variant:boolean:"true"
+
+[Install]
+WantedBy=default.target
