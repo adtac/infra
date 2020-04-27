@@ -5,7 +5,8 @@ After=network.target docker.service rclone.service
 [Service]
 Type=simple
 WorkingDirectory=%h/.config/compose
-ExecStartPre=-/usr/bin/docker rmi compose_nginx
+ExecStartPre=-/usr/bin/docker rmi compose_enp2s0
+ExecStartPre=-/usr/bin/docker rmi compose_wg0
 ExecStartPre=-/usr/bin/docker rmi compose_cgit
 ExecStart=/usr/bin/docker-compose up
 ExecStop=/usr/bin/docker-compose down
