@@ -21,7 +21,7 @@ services:
     build: ./wg0
     ports:
       - 10.8.12.2:80:80
-      - 10.8.12.3:443:443
+      - 10.8.12.2:443:443
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
       - ${HOME}/www:/www
