@@ -1,22 +1,30 @@
 version: '3'
 
 services:
-  nginx:
-    build: ./nginx
+  enp2s0:
+    build: ./enp2s0
     ports:
-      - 80:80
-      - 443:443
+      - 148.251.77.168:80:80
+      - 148.251.77.168:443:443
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
       - /etc/htaccess:/etc/htaccess
       - ${HOME}/www:/www
-      - ${HOME}/media/music:/media/music
     networks:
       - plex_network
       - cgit_network
       - transmission_network
       - version_network
       - status_network
+
+  wg0:
+    build: ./wg0
+    ports:
+      - 10.8.12.2:80:80
+      - 10.8.12.3:443:443
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ${HOME}/www:/www
 
   certbot:
     build: ./certbot
