@@ -9,6 +9,8 @@ bindsym $mod+period exec python3 ~/bin/sway-toggle-ws
 
 bindsym $mod+space exec --no-startup-id rofi -show run -font "VT323 14" -normal-window
 
+bindsym $mod+p exec grim -g "$(slurp -d)" ~/screenshot.png
+
 # kill focused window
 bindsym $mod+Shift+q kill
 
