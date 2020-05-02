@@ -57,7 +57,7 @@ services:
       - TZ=America/Toronto
       - PLEX_CLAIM=${PLEX_CLAIM}
       - ADVERTISE_IP=https://plex.adtac.in/
-    hostname: plex-adtac-2
+    hostname: 2.adtac.in
     networks:
       enp2s0_network:
         ipv4_address: 10.101.1.4
