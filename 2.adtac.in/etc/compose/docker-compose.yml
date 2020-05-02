@@ -78,14 +78,14 @@ services:
       - transmission_watch:/var/transmission/watch
       - ${HOME}/dl:/var/transmission/dl
     networks:
-      enp2s0_network:
-        ipv4_address: 10.101.1.6
+      wg0_network:
+        ipv4_address: 10.101.2.3
 
   version:
     image: registry.gitlab.com/commento/misc/version:latest
     networks:
       enp2s0_network:
-        ipv4_address: 10.101.1.7
+        ipv4_address: 10.101.1.6
 
   status:
     image: registry.gitlab.com/commento/misc/status:latest
@@ -95,7 +95,7 @@ services:
       - status_data:/data
     networks:
       enp2s0_network:
-        ipv4_address: 10.101.1.8
+        ipv4_address: 10.101.1.7
 
   wpodns:
     image: registry.gitlab.com/adtac/wpodns:latest
