@@ -1,0 +1,4 @@
+{
+  "rpc-enabled": true,
+  "rpc-whitelist": "127.0.0.1,10.8.12.*"
+}
