@@ -13,6 +13,12 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
       - /etc/htaccess:/etc/htaccess
       - ${HOME}/www:/www
+    depends_on:
+      - plex
+      - cgit
+      - transmission
+      - version
+      - status
     networks:
       enp2s0_network:
         ipv4_address: 10.101.1.2
