@@ -95,6 +95,8 @@ t() {
 
 alias dl="axel -n 8 -a"
 
+alias nc="sed 's/\x1b\[[0-9;]*m//g'"
+
 open() {
     xdg-open $1 2>/dev/null 1>/dev/null &
 }
