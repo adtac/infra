@@ -1,0 +1,4 @@
+{
+  "rpc-host-whitelist": "transmission.adtac.in",
+  "rpc-whitelist": "10.*.*.*"
+}
