@@ -1,8 +1,11 @@
 version: '3'
 
 services:
-  enp2s0:
-    build: ./enp2s0
+  nginx_enp2s0:
+    build:
+      context: ./nginx
+      args:
+        iface: enp2s0
     ports:
       - 148.251.77.168:80:80
       - 148.251.77.168:443:443
@@ -11,46 +14,55 @@ services:
       - /etc/htaccess:/etc/htaccess
       - ${HOME}/www:/www
     networks:
-      - plex_network
-      - cgit_network
-      - transmission_network
-      - version_network
-      - status_network
+      enp2s0_network:
+        ipv4_address: 10.101.1.2
 
-  wg0:
-    build: ./wg0
+  nginx_wg0:
+    build:
+      context: ./nginx
+      args:
+        iface: wg0
     ports:
       - 10.8.12.2:80:80
       - 10.8.12.2:443:443
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/htaccess:/etc/htaccess
       - ${HOME}/www:/www
+    networks:
+      wg0_network:
+        ipv4_address: 10.101.2.2
 
   certbot:
     build: ./certbot
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
       - ${HOME}/.config/google-cloud/google-cloud.json:/etc/google-cloud.json
+    networks:
+      enp2s0_network:
+        ipv4_address: 10.101.1.3
 
   plex:
     image: plexinc/pms-docker
     volumes:
       - plex_data:/config
       - ${HOME}/media:/data:rshared
-    networks:
-      - plex_network
     environment:
       - TZ=America/Toronto
       - PLEX_CLAIM=${PLEX_CLAIM}
       - ADVERTISE_IP=https://plex.adtac.in/
     hostname: plex-adtac-2
+    networks:
+      enp2s0_network:
+        ipv4_address: 10.101.1.4
 
   cgit:
     build: ./cgit
     volumes:
       - /home/git:/repos:ro
     networks:
-      - cgit_network
+      enp2s0_network:
+        ipv4_address: 10.101.1.5
 
   transmission:
     build: ./transmission
@@ -63,36 +75,51 @@ services:
       - transmission_watch:/var/transmission/watch
       - ${HOME}/dl:/var/transmission/dl
     networks:
-      - transmission_network
+      enp2s0_network:
+        ipv4_address: 10.101.1.6
 
   version:
     image: registry.gitlab.com/commento/misc/version:latest
     networks:
-      - version_network
+      enp2s0_network:
+        ipv4_address: 10.101.1.7
 
   status:
     image: registry.gitlab.com/commento/misc/status:latest
     environment:
       SQLITE3: /data/status.sqlite3
-    networks:
-      - status_network
     volumes:
       - status_data:/data
+    networks:
+      enp2s0_network:
+        ipv4_address: 10.101.1.8
 
   wpodns:
     image: registry.gitlab.com/adtac/wpodns:latest
     ports:
       - 148.251.77.168:53:5353/udp
-    networks:
-      - wpodns_network
 
 networks:
-  plex_network:
-  cgit_network:
-  transmission_network:
-  version_network:
-  status_network:
-  wpodns_network:
+  enp2s0_network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: 148.251.77.168
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.101.1.0/24
+  wg0_network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: 10.8.12.2
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.101.2.0/24
 
 volumes:
   plex_data:
