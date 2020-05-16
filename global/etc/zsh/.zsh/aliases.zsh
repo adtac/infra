@@ -3,6 +3,7 @@ alias vi="vim"
 alias mutt="neomutt -F ~/.config/mutt/config"
 
 alias a="aerc"
+alias b="bluetoothctl"
 alias f="newsboat"
 alias m="mutt"
 alias n="ncmpcpp"
@@ -26,7 +27,7 @@ function ledger_file() {
   esac
 }
 
-function b() {
+function ba() {
   ledger --strict -f "$(ledger_file $1)" balance ${@:2}
 }
 
