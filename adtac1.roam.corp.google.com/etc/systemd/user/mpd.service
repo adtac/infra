@@ -1,0 +1,11 @@
+[Unit]
+Description=music player daemon
+After=network.target sound.target
+Wants=sshfs@music.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/mpd --no-daemon
+
+[Install]
+WantedBy=default.target
