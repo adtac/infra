@@ -7,12 +7,16 @@ alias b="bluetoothctl"
 alias f="newsboat"
 alias m="mutt"
 alias n="ncmpcpp"
-alias r="ranger"
 alias v="vim"
 alias w="MOSH_ESCAPE_KEY='~' mosh 2.adtac.in -- tmux attach -t weechat"
 alias z="zathura"
 
-alias ar="ssh black -t tmux attach -t autored"
+function r() {
+  file=$(mktemp)
+  ranger --choosedir=$file
+  cd $(cat $file)
+  rm -rf $file
+}
 
 alias s="ls"
 alias l="ls -al"
@@ -21,9 +25,8 @@ alias ls='ls --group-directories-first --color=auto'
 
 function ledger_file() {
   case $1 in
-    "") echo "$HOME/docs/adhityaa/finances/ledger" ;;
-    a)  echo "$HOME/docs/adhityaa/finances/ledger" ;;
-    c)  echo "$HOME/docs/commento/finances/ledger" ;;
+    ""|a) echo "$HOME/docs/adhityaa/finances/ledger" ;;
+    c)    echo "$HOME/docs/commento/finances/ledger" ;;
   esac
 }
 
@@ -64,7 +67,6 @@ alias grep='grep --color=auto'
 alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
 
-# git stuff
 alias g="git show"
 alias gh="git show HEAD"
 alias gs="git status"
@@ -84,7 +86,6 @@ alias grc="git rebase --continue"
 alias gra="git rebase --abort"
 alias gst="git stash"
 alias gsta="git stash apply"
-alias gx="gco -- \*; git reset HEAD \*"
 alias gcp="git cherry-pick"
 alias gcpc="git cherry-pick --continue"
 alias gcpa="git cherry-pick --abort"
