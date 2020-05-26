@@ -2,7 +2,6 @@
 
 fpath=(~/.zsh/completion $fpath) 
 autoload -Uz compinit && compinit -C -d "${ZDOTDIR:-${HOME}}/${zcompdump_file:-.zcompdump}"
-compdef ${zpacman_frontend}='pacman'
  
 zstyle ':completion:*' menu select=2
 
