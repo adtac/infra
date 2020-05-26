@@ -2,7 +2,6 @@ alias vi="vim"
 
 alias mutt="neomutt -F ~/.config/mutt/config"
 
-alias a="aerc"
 alias b="bluetoothctl"
 alias f="newsboat"
 alias m="mutt"
