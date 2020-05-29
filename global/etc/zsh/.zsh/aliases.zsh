@@ -12,7 +12,7 @@ alias z="zathura"
 
 function r() {
   file=$(mktemp)
-  ranger --choosedir=$file
+  ranger --choosedir=$file $@
   cd $(cat $file)
   rm -rf $file
 }
