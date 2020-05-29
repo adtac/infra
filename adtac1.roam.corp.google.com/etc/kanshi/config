@@ -1,0 +1,8 @@
+profile {
+  output "Unknown 0x06DF 0x00000000" enable
+}
+
+profile "external-monitor-only" {
+  output "Lenovo Group Limited P24h-10 VTN31527" enable
+  output "Unknown 0x06DF 0x00000000" disable
+}
