@@ -1,85 +1,6 @@
-set $mod Mod4
 font VT323 13
-
-# start a terminal
-bindsym $mod+Return exec /bin/sh termite-custom
-
-# toggle between the current and the previous workspace
-bindsym $mod+period exec python3 ~/bin/sway-toggle-ws
-
-bindsym $mod+space exec --no-startup-id rofi -show run -font "VT323 14" -normal-window
-
-bindsym $mod+p exec grim -g "$(slurp -d)" ~/screenshot.png
-
-# kill focused window
-bindsym $mod+Shift+q kill
-
-bindsym $mod+Alt+Shift+l exec swaylock -e -c fff4e6 -u
-
-# move between windows
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
-
-bindsym $mod+a focus parent
-
-# move focused window
-bindsym $mod+shift+h move left
-bindsym $mod+shift+j move down
-bindsym $mod+shift+k move up
-bindsym $mod+shift+l move right
-
-# split orientation
-bindsym $mod+alt+l split h
-bindsym $mod+alt+h split h
-bindsym $mod+alt+j split v
-bindsym $mod+alt+k split v
-
-# enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle
-
-# toggle between tabbed and tiling; stacked windows are totally useless so I'm
-# not going to waste a binding on it
-bindsym $mod+alt+t layout tabbed
-bindsym $mod+alt+s layout toggle split
-
-set $ws1 " 1 "
-set $ws2 " 2 "
-set $ws3 " 3 "
-set $ws4 " 4 "
-set $ws5 " 5 "
-set $ws6 " 6 "
-set $ws7 " 7 "
-set $ws8 " 8 "
-set $ws9 " 9 "
-
-# switch to workspace
-bindsym $mod+1 workspace $ws1
-bindsym $mod+2 workspace $ws2
-bindsym $mod+3 workspace $ws3
-bindsym $mod+4 workspace $ws4
-bindsym $mod+5 workspace $ws5
-bindsym $mod+6 workspace $ws6
-bindsym $mod+7 workspace $ws7
-bindsym $mod+8 workspace $ws8
-bindsym $mod+9 workspace $ws9
-
-# move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace $ws1
-bindsym $mod+Shift+2 move container to workspace $ws2
-bindsym $mod+Shift+3 move container to workspace $ws3
-bindsym $mod+Shift+4 move container to workspace $ws4
-bindsym $mod+Shift+5 move container to workspace $ws5
-bindsym $mod+Shift+6 move container to workspace $ws6
-bindsym $mod+Shift+7 move container to workspace $ws7
-bindsym $mod+Shift+8 move container to workspace $ws8
-bindsym $mod+Shift+9 move container to workspace $ws9
-
-# reload the configuration file
-bindsym $mod+Shift+c reload
-
-bindsym $mod+Ctrl+Shift+q exit
+xwayland disable
+exec kanshi
 
 # class                 border     background  text       indicator  child-border
 client.focused          #d6336c  #d6336c   #ffffff  #d6336c  #d6336c
@@ -87,6 +8,21 @@ client.focused_inactive #000000  #000000   #fcc2d7  #ffe3e3  #ffe3e3
 client.unfocused        #fff4e6  #fff4e6   #073642  #fff4e6  #fff4e6
 client.background #ff0000
 output * bg #fff4e6 solid_color
+
+set $mod Mod4
+
+bindsym $mod+Shift+c reload
+bindsym $mod+Ctrl+Shift+q exit
+
+bindsym $mod+Return exec /bin/sh termite-custom
+bindsym $mod+period exec python3 ~/bin/sway-toggle-ws
+bindsym $mod+space exec --no-startup-id zsh -c "whence -pm '*'" | bemenu-run -l 10 -f -i -p " search: " -n --fn "VT323 16px" --tb "#ffe8cc" --tf "#d9480f" --fb "#ffe8cc" --ff "#495057" --nb "#ffe8cc" --nf "#495057" --hb "#ffd8a8" --hf "#495057" -w -m 0
+bindsym $mod+p exec grim -g "$(slurp -d)" ~/screenshot.png
+bindsym $mod+Alt+Shift+l exec swaylock -e -c fff4e6 -u
+
+bindsym $mod+f fullscreen toggle
+bindsym $mod+a focus parent
+bindsym $mod+Shift+q kill
 
 mode "resize" {
   bindsym h resize shrink width 5 px or 5 ppt
@@ -100,6 +36,50 @@ mode "resize" {
 
 bindsym $mod+shift+r mode "resize"
 
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+bindsym $mod+shift+h move left
+bindsym $mod+shift+j move down
+bindsym $mod+shift+k move up
+bindsym $mod+shift+l move right
+
+bindsym $mod+alt+l split h
+bindsym $mod+alt+h split h
+bindsym $mod+alt+j split v
+bindsym $mod+alt+k split v
+
+set $ws1 "1: 1 "
+set $ws2 "2: 2 "
+set $ws3 "3: 3 "
+set $ws4 "4: 4 "
+set $ws5 "5: 5 "
+set $ws6 "6: 6 "
+set $ws7 "7: 7 "
+set $ws8 "8: 8 "
+set $ws9 "9: 9 "
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+
+bindsym $mod+b                exec ~/bin/toggle-swaybar
 bar {
   font VT323 16px
   strip_workspace_numbers yes
@@ -117,7 +97,6 @@ bar {
   }
 }
 
-bindsym $mod+b                exec ~/bin/toggle-swaybar
 bindsym XF86AudioRaiseVolume  exec cntrl -r volume inc 5
 bindsym XF86AudioLowerVolume  exec cntrl -r volume dec 5
 bindsym XF86AudioMute         exec cntrl -r mute set toggle
