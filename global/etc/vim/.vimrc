@@ -115,6 +115,13 @@ augroup ledger
     \ highlight ledgerAssets cterm=NONE ctermfg=169
 augroup END
 
+augroup go
+  autocmd FileType go setlocal tabstop=2
+  autocmd FileType go setlocal noexpandtab
+  autocmd FileType go setlocal shiftwidth=2
+  autocmd FileType go setlocal softtabstop=2
+augroup END
+
 set statusline=\ %<#%02n\ %f\ %=%{&filetype!=#''?&filetype:'none'}%m\ %l:%c/%L\ 
 set laststatus=2
 
