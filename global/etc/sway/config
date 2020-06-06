@@ -1,5 +1,5 @@
 font VT323 13
-xwayland disable
+xwayland enable
 exec kanshi
 
 # class                 border     background  text       indicator  child-border
