@@ -1,0 +1,16 @@
+[Unit]
+Description=sshfs media mount template for %I
+Wants=network-online.target
+After=network.target network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=60
+ExecStartPre=-/usr/bin/mkdir -p %h%I
+ExecStartPre=-/usr/bin/fusermount -uz %h%I
+ExecStart=/usr/bin/sshfs -f 2.adtac.in:%h%I %h%I -o reconnect,ServerAliveInterval=15,ServerAliveCountMax=5
+ExecStop=-/usr/bin/fusermount -uz %h%I
+
+[Install]
+WantedBy=default.target
