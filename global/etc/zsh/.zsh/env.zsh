@@ -1,6 +1,8 @@
+export MPD_HOST=local.adtac.wg
+export MOZ_ENABLE_WAYLAND=1
+
 export XKB_DEFAULT_LAYOUT=us(altgr-intl)
 export XKB_DEFAULT_OPTIONS=caps:escape,lv3:ralt_switch
-export MPD_HOST=local.adtac.wg     # mpc uses this to resolve to mpd
 export XDG_SESSION_TYPE=wayland    # use wayland
 export TERM=screen-256color        # screen
 export LANG=en_US.UTF-8            # langauge and locale
