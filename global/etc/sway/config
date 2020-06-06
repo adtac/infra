@@ -1,6 +1,6 @@
 font VT323 13
 xwayland enable
-exec kanshi
+exec_always bash -c "pkill kanshi; exec kanshi"
 
 # class                 border     background  text       indicator  child-border
 client.focused          #d6336c  #d6336c   #ffffff  #d6336c  #d6336c
