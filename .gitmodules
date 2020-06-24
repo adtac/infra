@@ -1,36 +1,36 @@
 [submodule "global/pkgbuild/libldac"]
 	path = global/pkgbuild/libldac
 	url = https://aur.archlinux.org/libldac.git
-	ignore = untracked
+	ignore = dirty
 [submodule "global/pkgbuild/pulseaudio-modules-bt-git"]
 	path = global/pkgbuild/pulseaudio-modules-bt-git
 	url = https://aur.archlinux.org/pulseaudio-modules-bt-git.git
-	ignore = untracked
+	ignore = dirty
 [submodule "global/pkgbuild/digimend-kernel-drivers-dkms-git"]
 	path = global/pkgbuild/digimend-kernel-drivers-dkms-git
 	url = https://aur.archlinux.org/digimend-kernel-drivers-dkms-git.git
-	ignore = untracked
+	ignore = dirty
 [submodule "global/pkgbuild/sxiv-git"]
 	path = global/pkgbuild/sxiv-git
 	url = https://git.adtac.in/pkgbuild/sxiv-git.git
-	ignore = untracked
+	ignore = dirty
 [submodule "global/pkgbuild/bluez-git"]
 	path = global/pkgbuild/bluez-git
 	url = https://git.adtac.in/pkgbuild/bluez-git.git
-	ignore = untracked
+	ignore = dirty
 [submodule "global/pkgbuild/wf-recorder-git"]
 	path = global/pkgbuild/wf-recorder-git
 	url = https://aur.archlinux.org/wf-recorder-git.git
-	ignore = untracked
+	ignore = dirty
 [submodule "global/pkgbuild/v4l2loopback-dkms-git"]
 	path = global/pkgbuild/v4l2loopback-dkms-git
 	url = https://aur.archlinux.org/v4l2loopback-dkms-git.git
-	ignore = untracked
+	ignore = dirty
 [submodule "global/pkgbuild/ofono-git"]
 	path = global/pkgbuild/ofono-git
 	url = https://aur.archlinux.org/ofono-git.git
-	ignore = untracked
+	ignore = dirty
 [submodule "global/pkgbuild/phonesim"]
 	path = global/pkgbuild/phonesim
 	url = https://aur.archlinux.org/phonesim.git
-	ignore = untracked
+	ignore = dirty
