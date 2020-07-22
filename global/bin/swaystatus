@@ -19,6 +19,7 @@ get_music() {
   fi
 }
 
+kill -9 $(pidof i3status)
 i3status | while :
 do
   read line
