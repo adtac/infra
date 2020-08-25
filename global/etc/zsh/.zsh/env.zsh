@@ -1,6 +1,7 @@
 export MPD_HOST=local.adtac.wg
 export MOZ_ENABLE_WAYLAND=1
-
+export MOZ_ACCELERATED=1
+export MOZ_WEBRENDER=1
 export XKB_DEFAULT_LAYOUT=us(altgr-intl)
 export XKB_DEFAULT_OPTIONS=caps:escape,lv3:ralt_switch
 export XDG_SESSION_TYPE=wayland    # use wayland
