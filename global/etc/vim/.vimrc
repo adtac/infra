@@ -5,6 +5,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 call plug#begin('~/.vim/plugged')
   Plug 'editorconfig/editorconfig-vim'
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 call plug#end()
 
 set shiftwidth=2                       " shift width
@@ -138,6 +139,8 @@ nnoremap j gj
 nnoremap k gk
 
 nnoremap ,. <C-^>
+nnoremap ,j :lnext<CR>
+nnoremap ,k :lprev<CR>
 
 " TeX compile: use a clean build each time because TeX is weird like that
 nnoremap ,d :!rm *.aux; pdflatex % && bibtex %:r && pdflatex % && pdflatex %<cr>
