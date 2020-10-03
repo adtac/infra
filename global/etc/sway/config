@@ -1,4 +1,4 @@
-font VT323 13
+font Monospace 10
 xwayland enable
 exec_always bash -c "pkill kanshi; exec kanshi"
 
@@ -16,7 +16,7 @@ bindsym $mod+Ctrl+Shift+q exit
 
 bindsym $mod+Return exec /bin/sh termite-custom
 bindsym $mod+period exec python3 ~/bin/sway-toggle-ws
-bindsym $mod+space exec --no-startup-id zsh -c "whence -pm '*'" | bemenu-run -l 10 -f -i -p " search: " -n --fn "VT323 16px" --tb "#ffe8cc" --tf "#d9480f" --fb "#ffe8cc" --ff "#495057" --nb "#ffe8cc" --nf "#495057" --hb "#ffd8a8" --hf "#495057" -w -m 0
+bindsym $mod+space exec --no-startup-id zsh -c "whence -pm '*'" | bemenu-run -l 10 -f -i -p " search: " -n --fn "monospace 10" --tb "#ffe8cc" --tf "#d9480f" --fb "#ffe8cc" --ff "#495057" --nb "#ffe8cc" --nf "#495057" --hb "#ffd8a8" --hf "#495057" -w -m 0
 bindsym $mod+p exec grim -g "$(slurp -d)" ~/screenshot.png
 bindsym $mod+Alt+Shift+l exec swaylock -e -c fff4e6 -u
 
@@ -81,12 +81,13 @@ bindsym $mod+Shift+9 move container to workspace $ws9
 
 bindsym $mod+b                exec ~/bin/toggle-swaybar
 bar {
-  font VT323 16px
+  font monospace 9
   strip_workspace_numbers yes
   status_command ~/bin/swaystatus
+  pango_markup enabled
 
   position top
-  height 25
+  height 30
 
   colors {
     background         #fff4e6ff

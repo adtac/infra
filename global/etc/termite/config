@@ -1,5 +1,6 @@
 [options]
-  font = VT323 16px
+  font = monospace 10
+  bold_is_bright = true
   allow_bold = false
   allow_underline = false
   client_side_decoration = false
@@ -7,8 +8,8 @@
 [colors]
   # basics
   background        = #fff4e6
-  foreground        = #495057
-  foreground_bold   = #495057
+  foreground        = #343a40
+  foreground_bold   = #212529
   cursor            = #d9480f
   cursor_foreground = #fff4e6
 
