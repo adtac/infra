@@ -140,6 +140,8 @@ nmap ,c ,d,d
 
 nnoremap <silent> ,, :noh<cr>
 
+nnoremap <C-l> :set invnumber<cr>
+
 vnoremap // y/<C-R>"<CR>
 
 " basic theming: these colour numbers might not make sense unless you have the
