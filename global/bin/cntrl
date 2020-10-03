@@ -75,5 +75,5 @@ if [[ "$1" == "memory" ]]; then
 fi
 
 if [[ "$refresh_status" == "true" ]]; then
-  kill -USR1 $(pidof i3status)
+  kill -USR1 $(pgrep -f swaystatus -l | grep bash | cut -d ' ' -f 1)
 fi

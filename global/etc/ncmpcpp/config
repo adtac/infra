@@ -1,7 +1,7 @@
 mpd_host                              = local.adtac.wg
 user_interface                        = alternative
 mpd_music_dir                         = ~/media/music
-execute_on_song_change                = killall -USR1 i3status
+execute_on_song_change                = kill -USR1 $(pgrep -f swaystatus -l | grep bash | cut -d ' ' -f 1)
 
 playlist_display_mode                 = columns
 playlist_editor_display_mode          = columns

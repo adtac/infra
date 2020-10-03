@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
+ident_open="<span foreground=\"#868e96\">"
+ident_close="</span>"
+
 get_volume() {
   mute=$(cntrl volume is-muted)
   if [[ "$mute" == "yes" ]]; then
-    printf "Muted"
+    printf "muted"
   else
     volume=$(cntrl volume get)
     printf "%s" "$volume"
@@ -19,16 +22,31 @@ get_music() {
   fi
 }
 
-kill -9 $(pidof i3status)
-i3status | while :
-do
-  read line
+get_power() {
+  line=$(acpi)
+  echo -n "${ident_open}"
+  if echo "$line" | grep -q Discharging; then
+    echo -n "bat/"
+  else
+    echo -n "ac/"
+  fi
+  echo -n "${ident_close}"
+  echo "$line" | grep -oP '\d+%'
+}
 
-  volume=$(get_volume)
-  brightness=$(cntrl brightness get)
-  music=$(get_music)
-  temp=$(cntrl temperature get)
-  mem=$(cntrl memory get)
+line() {
+  music="<span foreground=\"#343a40\">$(get_music)</span>"
+  volume="${ident_open}vol/${ident_close}$(get_volume)"
+  brightness="${ident_open}bklt/${ident_close}$(cntrl brightness get)"
+  temp="${ident_open}temp/${ident_close}$(cntrl temperature get)"
+  mem="${ident_open}mem/${ident_close}$(cntrl memory get)"
+  date="$(date '+%a %-d %b %H:%M' | tr '[:upper:]' '[:lower:]') "
+  echo "$music    ${mem}    ${temp}    ${volume}    ${brightness}    $(get_power)    ${date}"
+}
 
-  echo "$music    ⛀ $mem    ⋇ $temp    ∿ $volume    ⚙ $brightness    $line "
+trap line SIGUSR1
+while true; do
+  line
+  sleep 60 &
+  wait $!
 done
