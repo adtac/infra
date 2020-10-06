@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 .PHONY: workstation
-workstation: config sway i3status dunst termite mpd ncmpcpp mpdscribble zathura zsh vim git ledger
+workstation: server sway i3status fontconfig dunst termite mpd ncmpcpp mpdscribble zathura ledger
 
 .PHONY: server
 server: config zsh vim git
@@ -17,6 +17,10 @@ sway:
 .PHONY: i3status
 i3status: sway
 	[ -d ${HOME}/.config/i3status ] || ln -s $(shell pwd)/i3status ${HOME}/.config/i3status
+
+.PHONY: fontconfig
+fontconfig: 
+	[ -f ${HOME}/.fonts.conf ] || ln -s $(shell pwd)/fontconfig/.fonts.conf ${HOME}/.fonts.conf
 
 .PHONY: termite
 termite:
