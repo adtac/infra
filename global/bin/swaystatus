@@ -31,7 +31,7 @@ get_power() {
     echo -n "ac/"
   fi
   echo -n "${ident_close}"
-  echo "$line" | grep -oP '\d+%'
+  echo "$line" | grep -oP '\d+%' | paste -sd ","
 }
 
 line() {
