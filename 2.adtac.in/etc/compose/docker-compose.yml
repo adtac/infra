@@ -80,6 +80,8 @@ services:
     networks:
       wg0_network:
         ipv4_address: 10.101.2.3
+      enp2s0_network:
+        ipv4_address: 10.101.1.8
 
   version:
     image: registry.gitlab.com/commento/misc/version:latest
