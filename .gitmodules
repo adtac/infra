@@ -26,3 +26,6 @@
 	path = global/pkgbuild/v4l2loopback-dkms-git
 	url = https://aur.archlinux.org/v4l2loopback-dkms-git.git
 	ignore = dirty
+[submodule "global/pkgbuild/ncspot"]
+	path = global/pkgbuild/ncspot
+	url = https://aur.archlinux.org/ncspot.git
