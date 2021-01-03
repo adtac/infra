@@ -98,6 +98,10 @@ bar {
   }
 }
 
+input "5426:110:Razer_Razer_DeathAdder_Essential" {
+  pointer_accel -0.93
+}
+
 bindsym XF86AudioRaiseVolume  exec cntrl -r volume inc 5
 bindsym XF86AudioLowerVolume  exec cntrl -r volume dec 5
 bindsym XF86AudioMute         exec cntrl -r mute set toggle
