@@ -1,0 +1,13 @@
+[Unit]
+Description=docker-compose services
+After=network.target docker.service rclone.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.config/compose
+ExecStartPre=-/usr/bin/docker-compose down --remove-orphans
+ExecStart=/usr/bin/docker-compose up --force-recreate --build
+ExecStop=/usr/bin/docker-compose down --remove-orphans
+
+[Install]
+WantedBy=default.target

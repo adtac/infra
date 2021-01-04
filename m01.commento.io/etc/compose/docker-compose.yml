@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  nginx_ens4:
+    build:
+      context: ./nginx
+      args:
+        iface: ens4
+    ports:
+      - 10.128.0.50:80:80
+      - 10.128.0.50:443:443
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ${HOME}/www:/www
+    depends_on:
+      - version
+      - status
+    networks:
+      ens4_network:
+        ipv4_address: 10.0.0.1
+
+  certbot:
+    build: ./certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ${HOME}/.config/google-cloud/google-cloud.json:/etc/google-cloud.json
+    networks:
+      ens4_network:
+        ipv4_address: 10.0.0.2
+
+  version:
+    image: registry.gitlab.com/commento/misc/version:latest
+    networks:
+      ens4_network:
+        ipv4_address: 10.0.0.3
+
+  status:
+    image: registry.gitlab.com/commento/misc/status:latest
+    environment:
+      SQLITE3: /data/status.sqlite3
+    volumes:
+      - status_data:/data
+    networks:
+      ens4_network:
+        ipv4_address: 10.0.0.4
+
+networks:
+  ens4_network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: 10.128.0.50
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.0.0/24
+
+volumes:
+  status_data:
