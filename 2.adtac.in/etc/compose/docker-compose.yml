@@ -15,8 +15,6 @@ services:
     depends_on:
       - plex
       - cgit
-      - version
-      - status
     networks:
       enp2s0_network:
         ipv4_address: 10.101.1.2
@@ -83,22 +81,6 @@ services:
       enp2s0_network:
         ipv4_address: 10.101.1.8
 
-  version:
-    image: registry.gitlab.com/commento/misc/version:latest
-    networks:
-      enp2s0_network:
-        ipv4_address: 10.101.1.6
-
-  status:
-    image: registry.gitlab.com/commento/misc/status:latest
-    environment:
-      SQLITE3: /data/status.sqlite3
-    volumes:
-      - status_data:/data
-    networks:
-      enp2s0_network:
-        ipv4_address: 10.101.1.7
-
   wpodns:
     image: registry.gitlab.com/adtac/wpodns:latest
     ports:
@@ -130,4 +112,3 @@ volumes:
   plex_data:
   transmission_data:
   transmission_watch:
-  status_data:
