@@ -17,7 +17,7 @@ services:
       - status
     networks:
       ens4_network:
-        ipv4_address: 10.0.0.1
+        ipv4_address: 10.0.0.2
 
   certbot:
     build: ./certbot
@@ -26,13 +26,13 @@ services:
       - ${HOME}/.config/google-cloud/google-cloud.json:/etc/google-cloud.json
     networks:
       ens4_network:
-        ipv4_address: 10.0.0.2
+        ipv4_address: 10.0.0.3
 
   version:
     image: registry.gitlab.com/commento/misc/version:latest
     networks:
       ens4_network:
-        ipv4_address: 10.0.0.3
+        ipv4_address: 10.0.0.4
 
   status:
     image: registry.gitlab.com/commento/misc/status:latest
@@ -42,7 +42,7 @@ services:
       - status_data:/data
     networks:
       ens4_network:
-        ipv4_address: 10.0.0.4
+        ipv4_address: 10.0.0.5
 
 networks:
   ens4_network:
