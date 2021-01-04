@@ -16,4 +16,4 @@ etc:
 
 .PHONY: homedirs
 homedirs:
-	cd ${HOME} && mkdir -p dl docs media mnt src tmp venv
+	cd ${HOME} && mkdir -p dl docs media mnt src tmp venv www
