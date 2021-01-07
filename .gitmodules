@@ -29,3 +29,9 @@
 [submodule "global/pkgbuild/ncspot"]
 	path = global/pkgbuild/ncspot
 	url = https://aur.archlinux.org/ncspot.git
+[submodule "global/pkgbuild/zfs-linux"]
+	path = global/pkgbuild/zfs-linux
+	url = https://aur.archlinux.org/zfs-linux.git
+[submodule "global/pkgbuild/zfs-utils"]
+	path = global/pkgbuild/zfs-utils
+	url = https://aur.archlinux.org/zfs-utils.git
