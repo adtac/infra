@@ -1,7 +1,3 @@
-[submodule "global/pkgbuild/libldac"]
-	path = global/pkgbuild/libldac
-	url = https://aur.archlinux.org/libldac.git
-	ignore = dirty
 [submodule "global/pkgbuild/pulseaudio-modules-bt-git"]
 	path = global/pkgbuild/pulseaudio-modules-bt-git
 	url = https://aur.archlinux.org/pulseaudio-modules-bt-git.git
