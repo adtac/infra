@@ -18,9 +18,6 @@
 	path = global/pkgbuild/v4l2loopback-dkms-git
 	url = https://aur.archlinux.org/v4l2loopback-dkms-git.git
 	ignore = dirty
-[submodule "global/pkgbuild/ncspot"]
-	path = global/pkgbuild/ncspot
-	url = https://aur.archlinux.org/ncspot.git
 [submodule "global/pkgbuild/zfs-linux"]
 	path = global/pkgbuild/zfs-linux
 	url = https://aur.archlinux.org/zfs-linux.git
@@ -33,3 +30,6 @@
 [submodule "global/pkgbuild/pulseaudio-modules-bt"]
 	path = global/pkgbuild/pulseaudio-modules-bt
 	url = https://aur.archlinux.org/pulseaudio-modules-bt.git
+[submodule "global/pkgbuild/spotify"]
+	path = global/pkgbuild/spotify
+	url = https://aur.archlinux.org/spotify.git
