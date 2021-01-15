@@ -35,3 +35,6 @@
 [submodule "global/pkgbuild/zfs-utils"]
 	path = global/pkgbuild/zfs-utils
 	url = https://aur.archlinux.org/zfs-utils.git
+[submodule "global/pkgbuild/docker-rootless-extras-bin"]
+	path = global/pkgbuild/docker-rootless-extras-bin
+	url = https://aur.archlinux.org/docker-rootless-extras-bin.git
