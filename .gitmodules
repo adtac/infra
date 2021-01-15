@@ -1,7 +1,3 @@
-[submodule "global/pkgbuild/pulseaudio-modules-bt-git"]
-	path = global/pkgbuild/pulseaudio-modules-bt-git
-	url = https://aur.archlinux.org/pulseaudio-modules-bt-git.git
-	ignore = dirty
 [submodule "global/pkgbuild/digimend-kernel-drivers-dkms-git"]
 	path = global/pkgbuild/digimend-kernel-drivers-dkms-git
 	url = https://aur.archlinux.org/digimend-kernel-drivers-dkms-git.git
@@ -34,3 +30,6 @@
 [submodule "global/pkgbuild/docker-rootless-extras-bin"]
 	path = global/pkgbuild/docker-rootless-extras-bin
 	url = https://aur.archlinux.org/docker-rootless-extras-bin.git
+[submodule "global/pkgbuild/pulseaudio-modules-bt"]
+	path = global/pkgbuild/pulseaudio-modules-bt
+	url = https://aur.archlinux.org/pulseaudio-modules-bt.git
