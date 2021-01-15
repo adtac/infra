@@ -36,15 +36,6 @@ services:
       wg0_network:
         ipv4_address: 10.101.2.2
 
-  certbot:
-    build: ./certbot
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
-      - ${HOME}/.config/google-cloud/google-cloud.json:/etc/google-cloud.json
-    networks:
-      enp2s0_network:
-        ipv4_address: 10.101.1.3
-
   plex:
     image: plexinc/pms-docker
     volumes:
