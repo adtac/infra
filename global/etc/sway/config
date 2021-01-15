@@ -107,12 +107,12 @@ bindsym XF86AudioLowerVolume  exec cntrl -r volume dec 5
 bindsym XF86AudioMute         exec cntrl -r mute set toggle
 bindsym XF86MonBrightnessUp   exec cntrl -r brightness inc 2.5
 bindsym XF86MonBrightnessDown exec cntrl -r brightness dec 2.5
-bindsym F12                   exec mpc toggle
-bindsym XF86AudioPlay         exec mpc toggle
-bindsym XF86AudioPause        exec mpc toggle
-bindsym XF86Favorites         exec mpc toggle
-bindsym XF86AudioNext         exec mpc next
-bindsym XF86AudioPrev         exec mpc prev
+bindsym F12                   exec musicctl toggle
+bindsym XF86AudioPlay         exec musicctl toggle
+bindsym XF86AudioPause        exec musicctl toggle
+bindsym XF86Favorites         exec musicctl toggle
+bindsym XF86AudioNext         exec musicctl next
+bindsym XF86AudioPrev         exec musicctl prev
 
 default_border pixel 3
 gaps inner 3

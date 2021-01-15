@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+spotify_sendmsg() {
+  dbus-send --print-reply \
+    --dest=org.mpris.MediaPlayer2.spotify \
+    /org/mpris/MediaPlayer2 $@
+}
+
+help_msg() {
+  echo "usage: musicctl toggle|next|prev"
+}
+
+case "$1" in
+  toggle) spotify_sendmsg "org.mpris.MediaPlayer2.Player.PlayPause";;
+  next)   spotify_sendmsg "org.mpris.MediaPlayer2.Player.Next";;
+  prev)   spotify_sendmsg "org.mpris.MediaPlayer2.Player.Previous";;
+  *)      help_msg
+esac
