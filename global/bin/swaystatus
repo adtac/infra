@@ -13,15 +13,6 @@ get_volume() {
   fi
 }
 
-get_music() {
-  lines=$(mpc | wc -l)
-  if [[ "$lines" -gt "1" ]]; then
-    mpc | head -n 1
-  else
-    printf "Not Playing"
-  fi
-}
-
 get_power() {
   line=$(acpi)
   echo -n "${ident_open}"
@@ -34,8 +25,12 @@ get_power() {
   echo "$line" | grep -oP '\d+%' | paste -sd ","
 }
 
+music_sigusr1() {
+  while musicctl watch; do kill -SIGUSR1 $$; sleep 1; done
+}
+
 line() {
-  music="<span foreground=\"#343a40\">$(get_music)</span>"
+  music="<span foreground=\"#343a40\">$(musicctl get)</span>"
   volume="${ident_open}vol/${ident_close}$(get_volume)"
   brightness="${ident_open}bklt/${ident_close}$(cntrl brightness get)"
   temp="${ident_open}temp/${ident_close}$(cntrl temperature get)"
@@ -44,6 +39,7 @@ line() {
   echo "$music    ${mem}    ${temp}    ${volume}    ${brightness}    $(get_power)    ${date}"
 }
 
+music_sigusr1 &
 trap line SIGUSR1
 while true; do
   line

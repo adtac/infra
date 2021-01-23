@@ -1,11 +1,6 @@
 alias vi="vim"
 
-alias mutt="neomutt -F ~/.config/mutt/config"
-
 alias b="bluetoothctl"
-alias f="newsboat"
-alias m="mutt"
-alias n="ncmpcpp"
 alias v="vim"
 alias w="MOSH_ESCAPE_KEY='~' mosh 2.adtac.in -- tmux attach -t weechat"
 alias z="zathura"
@@ -90,13 +85,7 @@ alias gcpc="git cherry-pick --continue"
 alias gcpa="git cherry-pick --abort"
 alias gpar="git remote | xargs -L1 git push --all"
 
-t() {
-  $EDITOR $HOME/docs/adhityaa/log
-}
-
 alias dl="axel -n 8 -a"
-
-alias nc="sed 's/\x1b\[[0-9;]*m//g'"
 
 open() {
     xdg-open $1 2>/dev/null 1>/dev/null &

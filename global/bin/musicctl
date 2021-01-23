@@ -1,16 +1,42 @@
 #!/usr/bin/env bash
 
 spotify_sendmsg() {
-  dbus-send --print-reply \
+  dbus-send --print-reply=literal \
     --dest=org.mpris.MediaPlayer2.spotify \
     /org/mpris/MediaPlayer2 $@
 }
 
+spotify_get() {
+  python - <<EOF
+import dbus
+bus = dbus.SessionBus()
+mp2 = bus.get_object("org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2")
+for k, v in mp2.Get("org.mpris.MediaPlayer2.Player", "Metadata", dbus_interface="org.freedesktop.DBus.Properties").items():
+  if k == "xesam:title": title = v
+  if k == "xesam:artist": artist = ", ".join(v)
+print("{} - {}".format(title, artist))
+EOF
+}
+
+spotify_watch() {
+  python - <<EOF
+import dbus, dbus.mainloop.glib, gi.repository.GLib
+dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+bus = dbus.SessionBus()
+mp2 = bus.get_object("org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2")
+loop = gi.repository.GLib.MainLoop()
+mp2.connect_to_signal("PropertiesChanged", lambda x, y, z: loop.quit(), dbus_interface="org.freedesktop.DBus.Properties")
+loop.run()
+EOF
+}
+
 help_msg() {
-  echo "usage: musicctl toggle|next|prev"
+  echo "usage: musicctl get|watch|toggle|next|prev"
 }
 
 case "$1" in
+  get)    spotify_get;;
+  watch)  spotify_watch;;
   toggle) spotify_sendmsg "org.mpris.MediaPlayer2.Player.PlayPause";;
   next)   spotify_sendmsg "org.mpris.MediaPlayer2.Player.Next";;
   prev)   spotify_sendmsg "org.mpris.MediaPlayer2.Player.Previous";;
