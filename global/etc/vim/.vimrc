@@ -128,6 +128,9 @@ augroup go
   autocmd FileType go setlocal softtabstop=2
 augroup END
 
+let g:go_fmt_autosave = 0
+let html_no_rendering=1
+
 set statusline=\ %<#%02n\ %f\ %=%{&filetype!=#''?&filetype:'none'}%m\ %l:%c/%L\ 
 set laststatus=2
 
@@ -137,6 +140,8 @@ nnoremap <space> i
 " treat long lines as break lines
 nnoremap j gj
 nnoremap k gk
+nnoremap <C-d> 15j
+nnoremap <C-u> 15k
 
 nnoremap ,. <C-^>
 nnoremap ,j :lnext<CR>
